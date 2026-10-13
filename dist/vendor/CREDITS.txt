@@ -1,0 +1,11 @@
+Three.js 0.186.1 (MIT)
+Vendored without modification from the official published npm package.
+Registry: https://registry.npmjs.org/three/0.186.1
+Package tarball: https://registry.npmjs.org/three/-/three-0.186.1.tgz
+Official project: https://threejs.org/
+Official repository: https://github.com/mrdoob/three.js
+Installation guide: https://threejs.org/manual/pages/installation.html
+Package integrity verified: sha512-blFeqb49wRCSGUGj7gtpfnSGHy2lwDk94RhUmS1c/hTby70kvChbWpkJ4Pm1390LqzzvTmzgXKHPEafJwCb8jA==
+Local entry: three.module.js imports ./three.core.js from the same release.
+See LICENSE.txt for the complete MIT license.
+Verified 2026-10-13.

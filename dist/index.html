@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#06090f">
-  <meta name="description" content="ออกไปไกลครั้งละหนึ่งปีแสง สำรวจ 12 แลนด์มาร์กอวกาศจากเมฆออร์ตถึงกาแล็กซีแอนโดรเมดา ในพิพิธภัณฑ์จักรวาลภาษาไทย">
+  <meta name="description" content="ออกไปไกลครั้งละหนึ่งปีแสง สำรวจ 12 แลนด์มาร์กอวกาศจากเมฆออร์ตถึงกาแล็กซีแอนโดรเมดา ผ่านฉากอวกาศสามมิติภาษาไทย">
   <meta property="og:title" content="LIGHTYEAR — ออกไปไกลแค่ไหน">
   <meta property="og:description" content="จากโลกเล็ก ๆ สู่จักรวาลที่ใหญ่กว่าจินตนาการ เริ่มการสำรวจครั้งละหนึ่งปีแสง">
   <meta property="og:type" content="website">
@@ -14,12 +14,38 @@
   <link rel="stylesheet" href="./assets/fonts.css">
   <link rel="stylesheet" href="./styles.css?v=3">
   <link rel="stylesheet" href="./experience.css?v=3">
+  <link rel="stylesheet" href="./flight.css?v=4">
   <link rel="preload" href="./assets/cosmic-hero.jpg" as="image">
   <link rel="preload" href="./assets/fonts/thai-700.ttf" as="font" type="font/ttf" crossorigin>
   <script src="./radius.js?v=3" defer></script>
-  <script type="module" src="./app.js?v=3"></script>
+  <script type="module" src="./flight.js?v=4"></script>
 </head>
 <body>
+  <main class="journey" id="journey" aria-label="สำรวจอวกาศสามมิติ">
+    <canvas id="flight-canvas" tabindex="0" aria-label="ฉากอวกาศสามมิติ ลากเพื่อเปลี่ยนมุมมอง เลื่อนเพื่อเข้าใกล้ ใช้ลูกศรซ้ายขวาเพื่อเปลี่ยนจุดหมาย และปุ่มบวกลบเพื่อซูม"></canvas>
+    <div class="journey-shade" aria-hidden="true"></div>
+    <header class="journey-header">
+      <button class="brand flight-home" id="flight-home" aria-label="กลับสู่โลก"><svg class="brand-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="7" fill="currentColor"/><ellipse cx="20" cy="20" rx="19" ry="8" transform="rotate(-40 20 20)" stroke="currentColor" stroke-width="1.4"/><circle cx="32" cy="8" r="2.5" fill="#94dae5"/></svg><span>LIGHTYEAR<span class="brand-dot">.</span></span></button>
+      <span class="journey-heading">ปล่อยให้ความสงสัยพาเราไป</span>
+      <div class="journey-menu"><button id="open-knowledge" type="button">หนึ่งปีแสงแรก</button><button id="open-destinations" type="button"><span aria-hidden="true">✦</span> เลือกจุดหมาย</button></div>
+    </header>
+    <div class="flight-orientation"><span class="status-dot"></span><span id="flight-state" role="status" aria-live="polite">ลอยอยู่เหนือโลก</span></div>
+    <div class="flight-help">ลากเพื่อมองรอบ <span>·</span> เลื่อนเพื่อเข้าใกล้</div>
+    <div class="flight-tools" role="group" aria-label="ควบคุมมุมมอง"><button id="flight-zoom-in" aria-label="เข้าใกล้วัตถุ">+</button><button id="flight-zoom-out" aria-label="ถอยห่างจากวัตถุ">−</button><span></span><button id="flight-reset" aria-label="คืนมุมมองเริ่มต้น">↺</button><button id="flight-pause" aria-label="หยุดการเคลื่อนไหว" aria-pressed="false">Ⅱ</button><button id="flight-fullscreen" aria-label="เปิดเต็มจอ">⛶</button></div>
+    <section class="flight-caption" aria-labelledby="flight-name">
+      <p class="flight-kicker" id="flight-kicker">OUR PALE BLUE DOT</p>
+      <h1 id="flight-name">Earth<span>โลกของเรา</span></h1>
+      <p id="flight-copy">จุดเล็ก ๆ ที่เราเรียกว่าบ้าน<br>แล้วนอกเหนือจากนี้… มีอะไรอยู่บ้าง?</p>
+      <button id="flight-detail" type="button">รู้จักจุดนี้ <span aria-hidden="true">↗</span></button>
+    </section>
+    <div class="flight-coordinate"><span>ระยะจากโลก</span><strong id="flight-distance">0 <small>ปีแสง</small></strong><span id="flight-location-note">คุณอยู่ที่จุดเริ่มต้น</span></div>
+    <nav class="flight-route" aria-label="เส้นทางสำรวจ"><div class="route-line" id="route-line"></div><div class="route-controls"><button id="flight-prev" class="round-button" aria-label="จุดหมายก่อนหน้า" disabled>←</button><span id="flight-index">00 <i>/</i> 12</span><button id="flight-next">ออกจากโลก <span aria-hidden="true">→</span></button><button id="flight-tour" aria-label="เปิดการเดินทางอัตโนมัติ" aria-pressed="false">▷ <span>เดินทางอัตโนมัติ</span></button></div></nav>
+    <div class="flight-footnote"><span>ฉากสามมิติ · ย่อขนาด ระยะ และเวลาเพื่อสำรวจ</span><button id="open-about">เกี่ยวกับการจำลอง ↗</button></div>
+    <div class="flight-transit" aria-hidden="true"></div>
+  </main>
+  <p id="flight-fallback" hidden>อุปกรณ์นี้เปิดฉากสามมิติไม่ได้ คุณยังสำรวจภาพและข้อมูลด้านล่างได้</p>
+  <dialog id="destinations-dialog" class="flight-panel" aria-labelledby="destinations-title"><button class="panel-close" aria-label="ปิดแผนที่จุดหมาย">×</button><div class="panel-heading"><p class="eyebrow">CHOOSE YOUR NEXT DISCOVERY</p><h2 id="destinations-title">ไกลอีกนิด… ไปที่ไหนดี</h2><p>12 จุดหมายเรียงตามระยะจากโลก แต่ละแห่งอยู่คนละทิศ</p></div><button id="destination-earth" class="earth-return">↙ กลับสู่โลก <span>0 ปีแสง</span></button><div id="destination-content"></div></dialog>
+  <dialog id="knowledge-dialog" class="flight-panel knowledge-panel" aria-labelledby="knowledge-title"><button class="panel-close" aria-label="ปิดข้อมูลการเดินทาง">×</button><div class="panel-heading"><p class="eyebrow">A LITTLE CONTEXT FOR A BIG UNIVERSE</p><h2 id="knowledge-title">รู้ระยะ แล้วออกไปสำรวจ</h2><p>ฉากเป็นภาพจำลองเพื่อให้สำรวจได้: ขนาด ระยะ ความสว่าง สี และเวลาถูกปรับ ไม่ใช่เส้นทางบินตรงหรือการจำลองฟิสิกส์ของยาน</p><p>พื้นผิวโลกและเมฆจาก NASA เป็นภาพประกอบจากข้อมูลในอดีต ไม่ใช่สภาพอากาศปัจจุบัน · ท้องฟ้าเป็นฉากศิลป์ ไม่ใช่แผนที่นำทาง · Sagittarius A* เป็นภาพแนวคิด</p></div><p class="earth-credits"><a href="https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.jpg" target="_blank" rel="noopener noreferrer">พื้นผิวโลก · NASA Blue Marble ↗</a> <span> / </span> <a href="https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57747/cloud_combined_2048.jpg" target="_blank" rel="noopener noreferrer">ชั้นเมฆ · NASA ↗</a></p><div id="knowledge-content"></div></dialog>
   <a class="skip-link" href="#main">ข้ามไปยังเนื้อหา</a>
   <header class="site-header" id="site-header">
     <a class="brand" href="#home" aria-label="LIGHTYEAR กลับจุดเริ่มต้น">

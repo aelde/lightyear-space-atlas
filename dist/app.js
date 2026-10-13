@@ -29,7 +29,7 @@ function sceneMarkup(id) {
   return `<div class="specimen-illustration">${illustration(id)}</div>`;
 }
 
-function selectExhibit(id, announce = true) {
+export function selectExhibit(id, announce = true) {
   const item = landmarks.find(entry => entry.id === id);
   if (!item) return;
   selectedId = id;
@@ -54,6 +54,7 @@ function selectExhibit(id, announce = true) {
     button.setAttribute('aria-pressed',String(selected));
   });
   if (announce) resultsStatus.textContent = `${item.name} ${item.distanceLabel}`;
+  if (announce) document.dispatchEvent(new CustomEvent('exhibitselect', {detail:id}));
 }
 
 function renderCollection(filter = 'all') {
@@ -109,7 +110,7 @@ function renderDetail(index) {
   $('#dialog-next').disabled = index === landmarks.length-1;
   dialog.scrollTop = 0;
 }
-function openDetail(id) {
+export function openDetail(id) {
   const index = landmarks.findIndex(item => item.id === id);
   if (index < 0) return;
   lastFocus = document.activeElement;

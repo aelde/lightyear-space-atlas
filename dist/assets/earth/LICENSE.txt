@@ -1,0 +1,15 @@
+NASA imagery usage
+
+These NASA GSFC Blue Marble images are used as factual source textures in an
+educational graphical simulation. NASA's image/media guidance generally permits
+educational and informational use of NASA content, including texture maps,
+computer graphical simulations and webpages, with NASA acknowledged as source.
+It distinguishes any third-party copyrighted content and prohibits implying NASA
+endorsement. These images have been downloaded without alteration from the NASA
+GSFC asset URLs listed in CREDITS.txt; no NASA insignia or logo is included.
+
+This file summarizes the source guidance; it is not a separate NASA license or
+an assertion that NASA endorses the project. Refer to the original guidance:
+https://www.nasa.gov/nasa-brand-center/images-and-media/
+
+Attribution for these files is provided in CREDITS.txt.

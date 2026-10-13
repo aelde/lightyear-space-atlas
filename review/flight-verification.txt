@@ -1,0 +1,19 @@
+LIGHTYEAR — free-space 3D journey, wave3
+User direction: free floating through space, without a ship or cockpit frame.
+Changes: full-screen WebGL scene, true sphere Earth/NASA maps/clouds, emissive stars, depth-bearing nebula gas, galaxy disk and particles. Smooth camera journeys with drag/orbit, zoom, pause, destination selector, tour and source-backed detail dialogs.
+Reused: original radius.js 0–10 light-year component, data/source links, destination rail/filter and landmark detail dialog from wave2.
+
+Observed local browser checks, 13 October 2026:
+- Earth sphere, clouds, illuminated/day and night edges rendered; drag changed the visible continents and illumination.
+- Zoom-in enlarged Earth, reset restored the framing. Canvas Right key changed Luhman 16 to Sirius A/B.
+- All 12 destination buttons selected the correct titled scene and rendered a browser screenshot; no captured warning/error logs in the pass.
+- Visually reviewed Earth, Proxima, Orion (volumetric gas), Sagittarius Andromeda, Luhman 16 and Pleiades.
+- Near filter stays open with six stops; choosing Proxima closes the selector and shows the 4.24 light-year scene. Proxima model is explicitly identified as Proxima only.
+- Radius '+' changed 1 to 2 on desktop and the 320 px layout after moving the original control to the knowledge dialog.
+- Detail dialog/source content opens and closes; focus returns to the opener.
+- Pause state toggles. Automatic tour advanced from Earth through the quiet regions to Proxima; stop toggled off.
+- Fullscreen button toggled the browser-reported UI label on/off. Native OS fullscreen and physical monitor output were not independently verified.
+- 1440x1000, 390x844 and 320x800 viewport checks; document width matched viewport without horizontal overflow. Core zoom buttons have 44 px hit areas. Scene caption is 13 px on narrow screens; knowledge prose is 14 px.
+- Syntax checks for app.js, flight.js, flight-field.js, flight-worlds.js and radius.js; Git whitespace check passed for authored files. Vendored upstream Three.js source retains its original whitespace and MIT license.
+
+Limits: mobile checks are browser viewport simulation, not physical phone tests. GPU-unavailable fallback and reduced-motion media preference were implemented but not exercised on a device. No claim of exact astronomy positions, travel physics, naked-eye brightness, or general-relativistic rendering; this is a compressed educational scene. Distances remain approximate distances from Earth, with destinations in different directions.
