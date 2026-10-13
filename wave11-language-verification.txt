@@ -1,0 +1,35 @@
+LIGHTYEAR Thai / English verification — 2026-10-13
+
+User request: support Thai and English on the existing website.
+Implementation: TH / EN controls in the immersive header, classic fallback header,
+and all three dialogs. Thai remains the default; explicit language selection is
+remembered locally. Valid ?lang=th or ?lang=en links override the stored choice.
+
+Source checks PASS:
+- 12 destination records and 3 learning notes translated.
+- 13 detailed scenes, 39 metrics, 39 sections and 39 hotspots translated.
+- 13 environment sound profiles translated; audio kind/gain remain identical.
+- 149 static UI/metadata/ARIA strings mapped; original child markup/icons retained.
+- Destination IDs, distances, categories, colours and all original source URLs preserved.
+- English punctuation retained; Thai cleanup never applied to English paragraphs.
+- Syntax checks on all changed JavaScript modules and git diff --check pass.
+
+Local browser checks PASS (Codex IAB and independent Chrome initial render):
+- All 13 scenes rendered in English with 3 inspector tabs/metrics/sections each.
+  No Thai text in those English captions, inspectors or sound profile text.
+- All 12 destination detail dialogs traversed in English; distances, full paragraphs
+  and sources translated, English punctuation intact.
+- Live switch in inspector retains active hotspot 3, effect speed 2x and open panel.
+- Live switch in detail/knowledge/destinations retains current object/dialog/filter.
+- Radius + increments from 1 to 10; translated results/ARIA update and radius persists
+  across language switch. Bounds and nearby-star chips retain original behavior.
+- Earth audio remains enabled with same 35% volume and active layer across TH/EN.
+- Pause and automatic-tour state retained across language switch; zoom/reset usable.
+- Explicit English and Thai selections survive opening a URL without lang parameter.
+- Responsive checks at 688x863, 390x844 and 360x780: no horizontal overflow.
+  Long Large Magellanic Cloud text and coordinate/help spacing inspected visually.
+- Temporary viewport overrides reset after checks.
+
+Limits: physical phone hardware and every browser/storage policy were not tested.
+The existing downloadable poster is a Thai bitmap; English UI identifies it as Thai.
+3D art, sound media, scientific sources and scene scale are unchanged by this task.

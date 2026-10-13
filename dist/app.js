@@ -1,8 +1,10 @@
-import { landmarks, learningNotes } from './landmarks.js?v=3';
+import { getLandmarks, getLearningNotes } from './localized-data.js?v=11';
+import { t, cleanCopy, shortDistance } from './i18n.js?v=11';
+let landmarks = getLandmarks();
 
 const $ = (selector) => document.querySelector(selector);
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
-const cleanThai = (value) => value.replace(/\. /g, ' ').replace(/\.$/, '');
+
 const crops = {oort:[24,300],interstellar:[352,300],centauri:[684,300],barnard:[24,574],luhman:[352,574],sirius:[684,574],vega:[24,906],pleiades:[352,906],orion:[684,906],sagittarius:[24,1189],lmc:[352,1189],andromeda:[684,1189]};
 const wideAssets = {centauri:'proxima-wide.jpg',barnard:'proxima-wide.jpg',luhman:'luhman-wide.jpg',sirius:'sirius-wide.jpg',vega:'vega-wide.jpg',pleiades:'pleiades-wide.jpg',orion:'orion-wide.jpg',sagittarius:'sagittarius-wide.jpg',lmc:'lmc-wide.jpg',andromeda:'andromeda-wide.jpg'};
 
@@ -42,10 +44,10 @@ export function selectExhibit(id, announce = true) {
   $('#exhibit-kicker').textContent = item.kicker;
   $('#exhibit-name').textContent = item.name;
   $('#exhibit-thai').textContent = item.thaiName;
-  $('#exhibit-distance').textContent = item.distanceLabel.replace('ประมาณ ','').replace(' ปีแสง','');
-  $('#exhibit-description').textContent = cleanThai(item.description.split('. ')[0]);
+  $('#exhibit-distance').textContent = shortDistance(item.distanceLabel).replace(/ (ปีแสง|light-years?)$/, '');
+  $('#exhibit-description').textContent = cleanCopy(item.description.split('. ')[0]);
   $('#exhibit-detail').dataset.open = id;
-  $('#exhibit-caption').textContent = id === 'oort' ? 'แผนภาพของบริเวณที่คาดว่ามีอยู่ · ยังไม่เห็นโดยตรง' : id === 'barnard' ? 'ภาพจำลองชนิดดาวแคระแดง · ไม่ตามมาตราส่วน' : 'ภาพจำลอง · สี ขนาด และระยะห่างไม่ตามจริง';
+  $('#exhibit-caption').textContent = id === 'oort' ? t('แผนภาพของบริเวณที่คาดว่ามีอยู่ · ยังไม่เห็นโดยตรง', 'Illustration of an inferred region · Not directly imaged') : id === 'barnard' ? t('ภาพจำลองชนิดดาวแคระแดง · ไม่ตามมาตราส่วน', 'Red dwarf illustration · Not to scale') : t('ภาพจำลอง · สี ขนาด และระยะห่างไม่ตามจริง', 'Illustration · Colour, size and spacing are adjusted');
   $('#exhibit-prev').disabled = filteredIndex <= 0;
   $('#exhibit-next').disabled = filteredIndex === collection.length-1;
   document.querySelectorAll('.rail-stop').forEach(button => {
@@ -62,7 +64,7 @@ function renderCollection(filter = 'all') {
   const collection = selectedCollection();
   grid.innerHTML = collection.map(item => {
     const index = landmarks.indexOf(item) + 1;
-    return `<button class="rail-stop" type="button" data-select="${item.id}" aria-pressed="false" aria-label="สำรวจ ${escapeHtml(item.name)} ${escapeHtml(item.distanceLabel)}"><span class="rail-number">${String(index).padStart(2,'0')}</span><strong>${escapeHtml(item.name)}</strong><span class="rail-distance">${escapeHtml(item.distanceLabel.replace('ประมาณ ',''))}</span></button>`;
+    return `<button class="rail-stop" type="button" data-select="${item.id}" aria-pressed="false" aria-label="${t('สำรวจ', 'Explore')} ${escapeHtml(item.name)} ${escapeHtml(item.distanceLabel)}"><span class="rail-number">${String(index).padStart(2,'0')}</span><strong>${escapeHtml(item.name)}</strong><span class="rail-distance">${escapeHtml(shortDistance(item.distanceLabel))}</span></button>`;
   }).join('');
   document.querySelectorAll('.filter-button').forEach(button => {
     const active = button.dataset.filter === activeFilter;
@@ -71,7 +73,7 @@ function renderCollection(filter = 'all') {
   });
   if (!collection.some(item => item.id === selectedId)) selectedId = collection[0].id;
   selectExhibit(selectedId,false);
-  resultsStatus.textContent = `แสดง ${collection.length} จุดหมาย ${filter === 'near' ? 'ในช่วง 1–10 ปีแสง' : filter === 'far' ? 'ที่ไกลออกไป' : 'ทั้งหมด'}`;
+  resultsStatus.textContent = t(`แสดง ${collection.length} จุดหมาย ${filter === 'near' ? 'ในช่วง 1–10 ปีแสง' : filter === 'far' ? 'ที่ไกลออกไป' : 'ทั้งหมด'}`, `Showing ${collection.length} destinations ${filter === 'near' ? 'within 1–10 light-years' : filter === 'far' ? 'further away' : 'in all'}`);
 }
 document.querySelectorAll('.filter-button').forEach(button => button.addEventListener('click',() => renderCollection(button.dataset.filter)));
 grid.addEventListener('click',event => {const button = event.target.closest('[data-select]');if(button)selectExhibit(button.dataset.select);});
@@ -81,8 +83,11 @@ $('#exhibit-next').addEventListener('click',()=>stepExhibit(1));
 $('#exhibit-stage').addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();stepExhibit(1);}else if(event.key==='ArrowLeft'){event.preventDefault();stepExhibit(-1);}});
 renderCollection();
 
-$('#learning-grid').innerHTML = learningNotes.map((note,index) => `<article class="learning-item reveal"><span class="learning-index">0${index+1} / ${['DISTANCE','DIRECTION','IMAGINATION'][index]}</span><h3>${escapeHtml(note.title)}</h3><p>${escapeHtml(cleanThai(note.text))}</p>${note.sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗</a>`).join('')}</article>`).join('');
+function renderLearning() {
+$('#learning-grid').innerHTML = getLearningNotes().map((note,index) => `<article class="learning-item reveal"><span class="learning-index">0${index+1} / ${['DISTANCE','DIRECTION','IMAGINATION'][index]}</span><h3>${escapeHtml(note.title)}</h3><p>${escapeHtml(cleanCopy(note.text))}</p>${note.sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗</a>`).join('')}</article>`).join('');
 $('#source-list').innerHTML = landmarks.map(item => `<a href="${escapeHtml(item.sources[0].url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.name)}<span>${item.sources[0].title.startsWith('ESO') ? 'ESO' : 'NASA'} ↗</span></a>`).join('');
+}
+renderLearning();
 
 function renderRadiusChips(radius) {
   const nearby = landmarks.filter(item => item.chapter === 'near' && item.category !== 'region' && item.distance <= radius);
@@ -102,8 +107,8 @@ function renderDetail(index) {
   $('#dialog-name').textContent = item.name;
   $('#dialog-thai').textContent = item.thaiName;
   $('#dialog-distance').textContent = item.distanceLabel;
-  $('#dialog-description').textContent = cleanThai(item.description);
-  $('#dialog-fact').textContent = cleanThai(item.fact);
+  $('#dialog-description').textContent = cleanCopy(item.description);
+  $('#dialog-fact').textContent = cleanCopy(item.fact);
   $('#dialog-sources').innerHTML = item.sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗</a>`).join('');
   $('#dialog-index').textContent = `${String(index+1).padStart(2,'0')} / 12`;
   $('#dialog-prev').disabled = index === 0;
@@ -135,8 +140,8 @@ $('#dialog-next').addEventListener('click',() => {if(dialogItemIndex<landmarks.l
 
 const menuButton = $('.menu-toggle');
 const mobileNav = $('#mobile-nav');
-function closeMenu(){mobileNav.hidden=true;menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','เปิดเมนู');}
-menuButton.addEventListener('click', () => {const open=mobileNav.hidden;mobileNav.hidden=!open;menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?'ปิดเมนู':'เปิดเมนู');});
+function closeMenu(){mobileNav.hidden=true;menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label',t('เปิดเมนู', 'Open menu'));}
+menuButton.addEventListener('click', () => {const open=mobileNav.hidden;mobileNav.hidden=!open;menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?t('ปิดเมนู', 'Close menu'):t('เปิดเมนู', 'Open menu'));});
 mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 document.addEventListener('keydown', event => {if(event.key==='Escape')closeMenu();});
 window.addEventListener('resize',()=>{if(window.innerWidth>640)closeMenu();},{passive:true});
@@ -154,3 +159,19 @@ if ('IntersectionObserver' in window) {
   const navObserver=new IntersectionObserver(entries => {entries.forEach(entry => {if(entry.isIntersecting){document.querySelectorAll('.desktop-nav a').forEach(link=>{if(link.hash === `#${entry.target.id}`)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}});},{rootMargin:'-25% 0px -50% 0px',threshold:0});
   ['distance','landmarks','understand'].forEach(id=>navObserver.observe(document.getElementById(id)));
 }
+
+// Refresh copy in place without dispatching exhibitselect or navigating the scene.
+document.addEventListener('languagechange', () => {
+  landmarks = getLandmarks();
+  const selectedBefore = selectedId;
+  renderCollection(activeFilter);
+  selectedId = selectedBefore;
+  selectExhibit(selectedId, false);
+  renderLearning();
+  document.querySelectorAll('#learning-grid .reveal').forEach(element => element.classList.add('is-visible'));
+  renderRadiusChips(Number($('#radius-slider').value));
+  const scrollTop = dialog.scrollTop;
+  renderDetail(dialogItemIndex);
+  dialog.scrollTop = scrollTop;
+  menuButton.setAttribute('aria-label', mobileNav.hidden ? t('เปิดเมนู', 'Open menu') : t('ปิดเมนู', 'Close menu'));
+});

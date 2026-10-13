@@ -1,0 +1,12 @@
+import { getLanguage } from './i18n.js?v=11';
+import { landmarks, learningNotes } from './landmarks.js?v=3';
+import { landmarksEn, learningNotesEn } from './landmarks-en.js?v=11';
+import { deepDetails } from './deep-details.js?v=9.5';
+import { deepDetailsEn } from './deep-details-en.js?v=11';
+import { soundProfiles, soundScienceSource } from './sound-profiles.js?v=7';
+import { soundProfilesEn, soundScienceSourceEn } from './sound-profiles-en.js?v=11';
+export const getLandmarks = () => getLanguage() === 'en' ? landmarksEn : landmarks;
+export const getLearningNotes = () => getLanguage() === 'en' ? learningNotesEn : learningNotes;
+export const getDeepDetails = () => getLanguage() === 'en' ? deepDetailsEn : deepDetails;
+export const getSoundProfiles = () => getLanguage() === 'en' ? soundProfilesEn : soundProfiles;
+export const getSoundScienceSource = () => getLanguage() === 'en' ? soundScienceSourceEn : soundScienceSource;
