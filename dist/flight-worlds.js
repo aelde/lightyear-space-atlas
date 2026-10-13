@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import { addStellarWeather, addDustDisk } from './flight-effects.js?v=13.1';
 import { enhancedStarMaterial, addDetailedCorona } from './stellar-surfaces.js?v=9.5';
-import { addPhotographicNebula } from './nebula-renderer.js?v=13.1';
+import { addPhotographicNebula } from './nebula-renderer.js?v=13.2';
 import { addDetailedGalaxy } from './galaxy-renderer.js?v=13.1';
 import { addDetailedIce, addInterstellarContext, addAccretionDetail } from './deep-space-details.js?v=13.1';
 

@@ -6,7 +6,7 @@ let deepDetails = getDeepDetails();
 let soundProfiles = getSoundProfiles();
 let soundScienceSource = getSoundScienceSource();
 import { selectExhibit, openDetail, escapeHtml } from './app.js?v=13.1';
-import { createWorld } from './flight-worlds.js?v=13.1';
+import { createWorld } from './flight-worlds.js?v=13.2';
 import { createSpaceField } from './flight-field.js?v=4';
 import { createSpaceAudio } from './flight-audio.js?v=7';
 

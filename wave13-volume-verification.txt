@@ -29,3 +29,5 @@ Limits
 - Black-hole lens-like glow is artistic; this is not full general-relativistic ray tracing.
 - Distant interstellar photographic panorama remains on a spherical sky boundary with spatial nearby stars; it is not a reconstruction of every distant star.
 - Performance observations are frame intervals on this computer. Real mobile hardware and every GPU were not tested. Heavy scenes compile on first entry and may pause briefly.
+
+Wave 14 refinement: preserve finer photographic filament/color detail inside the volume by reducing excessive reference mip blur. XYZ gas and dust geometry is unchanged. Orion/Pleiades front, side and back rechecked.

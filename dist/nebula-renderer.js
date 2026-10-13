@@ -65,11 +65,11 @@ export function addPhotographicNebula(group, { id, own, timeUniform, cameraUpdat
         vec2 uv=referenceXY/vec2(26.0,20.19)+.5;
         uv+=flow.xy*.0012;
         uv=clamp(uv,vec2(.002),vec2(.998));
-        vec3 photo=textureLod(uMap,uv,2.8).rgb;
+        vec3 photo=textureLod(uMap,uv,1.25).rgb;
         vec2 sideUv=p.yz/vec2(21.0,17.0)+.5;
         vec2 topUv=p.xz/vec2(26.0,17.0)+.5;
-        vec3 sideColour=textureLod(uMap,clamp(sideUv,vec2(.003),vec2(.997)),3.5).rgb;
-        vec3 topColour=textureLod(uMap,clamp(topUv,vec2(.003),vec2(.997)),3.5).rgb;
+        vec3 sideColour=textureLod(uMap,clamp(sideUv,vec2(.003),vec2(.997)),2.2).rgb;
+        vec3 topColour=textureLod(uMap,clamp(topUv,vec2(.003),vec2(.997)),2.2).rgb;
         vec3 localShape=abs(p/vec3(13.5,10.5,7.0));
         vec3 axisWeight=pow(localShape,vec3(4.0));axisWeight/=max(.001,axisWeight.x+axisWeight.y+axisWeight.z);
         vec3 observed=mix(photo,photo*axisWeight.z+sideColour*axisWeight.x+topColour*axisWeight.y,.46);
