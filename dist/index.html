@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06090f">
+  <meta name="description" content="ออกไปไกลครั้งละหนึ่งปีแสง สำรวจ 12 แลนด์มาร์กอวกาศจากเมฆออร์ตถึงกาแล็กซีแอนโดรเมดา ในพิพิธภัณฑ์จักรวาลภาษาไทย">
+  <meta property="og:title" content="LIGHTYEAR — ออกไปไกลแค่ไหน">
+  <meta property="og:description" content="จากโลกเล็ก ๆ สู่จักรวาลที่ใหญ่กว่าจินตนาการ เริ่มการสำรวจครั้งละหนึ่งปีแสง">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://lightyear-space-atlas.aek.chatgpt.site/assets/cosmic-hero.jpg">
+  <title>LIGHTYEAR — ออกไปไกลแค่ไหน</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="stylesheet" href="./assets/fonts.css">
+  <link rel="stylesheet" href="./styles.css?v=3">
+  <link rel="stylesheet" href="./experience.css?v=3">
+  <link rel="preload" href="./assets/cosmic-hero.jpg" as="image">
+  <link rel="preload" href="./assets/fonts/thai-700.ttf" as="font" type="font/ttf" crossorigin>
+  <script src="./radius.js?v=3" defer></script>
+  <script type="module" src="./app.js?v=3"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">ข้ามไปยังเนื้อหา</a>
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#home" aria-label="LIGHTYEAR กลับจุดเริ่มต้น">
+      <svg class="brand-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="7" fill="currentColor"/><ellipse cx="20" cy="20" rx="19" ry="8" transform="rotate(-40 20 20)" stroke="currentColor" stroke-width="1.4"/><circle cx="32" cy="8" r="2.5" fill="#94dae5"/></svg>
+      <span>LIGHTYEAR<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="desktop-nav" aria-label="เมนูหลัก">
+      <a href="#distance">หนึ่งปีแสงแรก</a>
+      <a href="#landmarks">สำรวจแลนด์มาร์ก</a>
+      <a href="#understand">รู้จักจักรวาล</a>
+    </nav>
+    <a class="header-cta" href="#landmarks">ออกสำรวจ <span aria-hidden="true">↗</span></a>
+    <button class="menu-toggle" type="button" aria-label="เปิดเมนู" aria-controls="mobile-nav" aria-expanded="false"><span></span><span></span></button>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="เมนูบนมือถือ" hidden>
+      <a href="#distance">หนึ่งปีแสงแรก</a><a href="#landmarks">สำรวจแลนด์มาร์ก</a><a href="#understand">รู้จักจักรวาล</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-art" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-content page-width">
+        <p class="eyebrow hero-eyebrow"><span class="status-dot"></span> A JOURNEY BEYOND OUR WORLD</p>
+        <h1 id="hero-title">ออกไปไกล<br><span>แค่ไหน…</span></h1>
+        <p class="hero-copy">ถ้าขยับออกจากโลก ครั้งละหนึ่งปีแสง<br>ระหว่างทาง… มีอะไรให้ค้นพบบ้าง?</p>
+        <div class="hero-actions"><a class="button button-light" href="#distance">เริ่มการสำรวจ <span aria-hidden="true">↗</span></a><a class="text-link hero-secondary" href="#landmarks">ดูทุกจุดหมาย <span aria-hidden="true">→</span></a></div>
+        <p class="hero-small">จากความเงียบระหว่างดวงดาว สู่กาแล็กซีไกลโพ้น</p>
+      </div>
+      <div class="hero-orbit" aria-hidden="true"><div></div><i></i><span>OUR LITTLE BLUE DOT</span></div>
+      <div class="hero-coordinate" aria-hidden="true"><span class="coordinate-cross">+</span><span>YOU ARE HERE</span><strong>EARTH</strong><span>จุดเริ่มต้นของการสำรวจ</span></div>
+      <div class="hero-bottom page-width"><a class="scroll-cue" href="#distance"><span class="scroll-line" aria-hidden="true"></span>เลื่อนเพื่อออกเดินทาง</a><div class="hero-distance"><span>THE WORLD BEYOND</span><strong>1 <span>→</span> 2,500,000 <small>LY</small></strong></div></div>
+      <div class="hero-image-note">ภาพจำลองเพื่อการเรียนรู้</div>
+    </section>
+
+    <section class="distance-section page-width" id="distance" aria-labelledby="distance-title">
+      <div class="section-number"><span>01 / THE FIRST LIGHT-YEAR</span><span>เริ่มจากสิ่งที่ใกล้ที่สุด</span></div>
+      <div class="distance-grid">
+        <div class="distance-story reveal">
+          <p class="eyebrow">SPACE IS MOSTLY SPACE.</p>
+          <h2 id="distance-title">หนึ่งปีแสงแรก<br>อาจเงียบกว่าที่คิด</h2>
+          <p class="body-copy">อวกาศไม่ได้มีจุดแวะทุก ๆ หนึ่งปีแสง เมื่อออกจากโลก เราอาจยังอยู่ในบริเวณเมฆออร์ต และต้องไปไกลกว่า <strong>4 ปีแสง</strong> จึงถึงระยะของดาวฤกษ์เพื่อนบ้านดวงแรก</p>
+          <div class="distance-equation"><span class="equation-unit">1 <small>ปีแสง</small></span><span class="equation-equals">≈</span><span class="equation-value">9.46 <small>ล้านล้านกิโลเมตร</small></span></div>
+          <a class="source-link" href="https://science.nasa.gov/exoplanets/what-is-a-light-year/" target="_blank" rel="noopener noreferrer">ระยะที่แสงเดินทางในหนึ่งปี <span>NASA ↗</span></a>
+        </div>
+        <div class="radius-explorer reveal" aria-labelledby="radius-title">
+          <div class="explorer-header"><span class="eyebrow">TRY A LITTLE FURTHER</span><span class="explorer-live"><span class="status-dot"></span>สำรวจระยะ</span></div>
+          <h3 id="radius-title">ลองขยายรัศมีจากโลก</h3>
+          <div class="radius-control"><button id="radius-minus" class="round-button" type="button" aria-label="ลดรัศมี 1 ปีแสง">−</button><div class="radius-readout"><output id="radius-value" for="radius-slider">1</output><span>ปีแสง</span></div><button id="radius-plus" class="round-button" type="button" aria-label="เพิ่มรัศมี 1 ปีแสง">+</button></div>
+          <div class="radius-map" aria-hidden="true"><div class="map-track"></div><div class="map-fill" id="map-fill"></div><span class="earth-dot"></span><span class="proxima-dot"><i></i><small>Proxima</small></span><span class="radius-dot" id="radius-dot"></span></div>
+          <input id="radius-slider" type="range" min="0" max="10" step="1" value="1" aria-label="รัศมีจากโลก หน่วยปีแสง" aria-valuetext="1 ปีแสง">
+          <div class="slider-labels"><span>โลก · 0</span><span>5</span><span>10 ปีแสง</span></div>
+          <div class="radius-result" role="status" aria-live="polite" aria-atomic="true"><span class="result-kicker" id="radius-kicker">จุดที่น่าสนใจในรัศมีนี้</span><h4 id="radius-result-title">เมฆออร์ตที่คาดว่ามีอยู่</h4><p id="radius-result-text">อาจยังอยู่ในแหล่งวัตถุน้ำแข็งรอบระบบสุริยะ ยังไม่ถึงดาวฤกษ์ดวงอื่น</p><div class="radius-chips" id="radius-chips"></div></div>
+          <p class="explorer-note">ขยายครั้งละ 1 ปีแสง · แสดงระยะจากโลก ทุกจุดอยู่คนละทิศ</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="landmarks-section page-width" id="landmarks" aria-labelledby="landmarks-title">
+      <div class="section-number"><span>02 / THE COSMIC COLLECTION</span><span>12 จุดหมาย · หลายขนาดของจักรวาล</span></div>
+      <div class="collection-heading reveal"><div><p class="eyebrow">A UNIVERSE OF DISCOVERIES</p><h2 id="landmarks-title">จักรวาลอยู่ตรงหน้า<br><span class="muted-heading">เลือกว่าจะไปไกลแค่ไหน</span></h2></div><p class="collection-intro">จากหนึ่งปีแสงแรก ถึงกาแล็กซีข้างเคียง<br>เลือกจุดหมาย แล้วเปิดมุมมองใหม่<br><span>เรียงตามระยะจากโลก ไม่ใช่เส้นทางบินตรง</span></p></div>
+      <div class="collection-toolbar"><div class="filter-group" role="group" aria-label="ช่วงระยะของแลนด์มาร์ก"><button class="filter-button is-active" data-filter="all" aria-pressed="true">ทั้งหมด <small>12</small></button><button class="filter-button" data-filter="near" aria-pressed="false">1–10 ปีแสง <small>6</small></button><button class="filter-button" data-filter="far" aria-pressed="false">ไกลออกไป <small>6</small></button></div><span class="collection-hint">คลิกเพื่อรู้จักแต่ละจุด <span aria-hidden="true">↗</span></span></div>
+      <div class="exhibit-stage" id="exhibit-stage" tabindex="0" aria-label="ตัวสำรวจแลนด์มาร์ก ใช้ปุ่มลูกศรซ้ายขวาเพื่อเปลี่ยนจุดหมาย">
+        <div class="exhibit-scene" id="exhibit-scene" aria-hidden="true"></div><div class="exhibit-shade" aria-hidden="true"></div>
+        <div class="exhibit-hud"><span><i class="status-dot"></i> COSMIC EXPLORER</span><span id="exhibit-index">03 / 12</span></div>
+        <div class="exhibit-content"><p class="eyebrow" id="exhibit-kicker"></p><h3 id="exhibit-name"></h3><p class="exhibit-thai" id="exhibit-thai"></p><div class="exhibit-distance"><span id="exhibit-distance"></span><small>ปีแสงจากโลก</small></div><p class="exhibit-description" id="exhibit-description"></p><button type="button" class="exhibit-detail" id="exhibit-detail">เปิดเรื่องราวของจุดนี้ <span aria-hidden="true">↗</span></button></div>
+        <div class="exhibit-bottom"><span class="exhibit-caption" id="exhibit-caption">ภาพจำลอง · ไม่ตามมาตราส่วน</span><div class="exhibit-controls"><button id="exhibit-prev" class="round-button" type="button" aria-label="สำรวจจุดหมายก่อนหน้า">←</button><button id="exhibit-next" class="round-button" type="button" aria-label="สำรวจจุดหมายถัดไป">→</button></div></div>
+      </div>
+      <div class="landmark-rail" id="landmark-grid" role="group" aria-label="เลือกแลนด์มาร์กตามระยะจากโลก"></div>
+      <div class="collection-scale"><span>ย่านเพื่อนบ้าน</span><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span>โลกของกาแล็กซี</span></div>
+      <p class="collection-footnote">ภาพประกอบทั้งหมดเป็นภาพจำลอง ขนาด สี ความสว่าง และตำแหน่งในภาพไม่ตามจริง</p>
+      <noscript><p>เปิด JavaScript เพื่อสำรวจแต่ละจุด หรือ <a href="./assets/landmarks-poster.png">เปิดภาพรวมทั้ง 12 จุดหมาย</a></p></noscript>
+    </section>
+
+    <section class="beyond-section" id="beyond" aria-labelledby="beyond-title">
+      <div class="beyond-art" aria-hidden="true"></div><div class="beyond-shade" aria-hidden="true"></div>
+      <div class="beyond-content page-width reveal"><p class="eyebrow"><span class="status-dot"></span> DESTINATION 12 / ANDROMEDA</p><h2 id="beyond-title">ไกลจนคำว่าไกล<br>เปลี่ยนความหมาย</h2><div class="beyond-distance">2.5<span>ล้านปีแสง</span></div><p>กาแล็กซีแอนโดรเมดา เพื่อนบ้านขนาดใหญ่ของเรา<br>จากหนึ่งปีแสงแรก… สู่ระยะที่จินตนาการแทบตามไม่ทัน</p><button class="button button-outline" data-open="andromeda">รู้จักแอนโดรเมดา <span aria-hidden="true">↗</span></button></div>
+      <span class="beyond-image-note">ภาพจำลองกาแล็กซีแอนโดรเมดา</span>
+    </section>
+
+    <section class="understand-section page-width" id="understand" aria-labelledby="understand-title">
+      <div class="section-number"><span>03 / A DIFFERENT PERSPECTIVE</span><span>มองจักรวาลให้เข้าใจขึ้นอีกนิด</span></div>
+      <div class="understand-heading reveal"><p class="eyebrow">BEFORE YOU GO FURTHER</p><h2 id="understand-title">สามเรื่องเล็ก ๆ<br>ที่ทำให้จักรวาลชัดขึ้น</h2></div>
+      <div class="learning-grid" id="learning-grid"></div>
+      <details class="sources-panel"><summary><span>ข้อมูลมาจากไหน?</span><span class="sources-badge">NASA / ESO <span aria-hidden="true">+</span></span></summary><div class="sources-content"><p>ใช้ค่าระยะโดยประมาณเพื่ออธิบายระดับของอวกาศ บางแหล่งปัดตัวเลขต่างกันเล็กน้อย คุณเปิดอ่านแหล่งต้นทางของแต่ละจุดได้ที่นี่</p><div class="source-list" id="source-list"></div></div></details>
+      <div class="poster-download"><div><span class="eyebrow">KEEP THE BIG PICTURE</span><h3>เก็บจักรวาลไว้ดูต่อ</h3><p>ภาพรวมทั้ง 12 จุดหมาย ในภาพเดียว</p></div><a class="button button-outline" href="./assets/landmarks-poster.png" download="space-landmarks-th.png">ดาวน์โหลดภาพรวม <span aria-hidden="true">↓</span></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer page-width"><a class="brand" href="#home"><svg class="brand-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="7" fill="currentColor"/><ellipse cx="20" cy="20" rx="19" ry="8" transform="rotate(-40 20 20)" stroke="currentColor" stroke-width="1.4"/></svg><span>LIGHTYEAR<span class="brand-dot">.</span></span></a><p>เปิดความสงสัย แล้วออกไปให้ไกลอีกนิด</p><a class="back-top" href="#home">กลับสู่โลก <span aria-hidden="true">↑</span></a></footer>
+
+  <dialog id="landmark-dialog" class="landmark-dialog" aria-labelledby="dialog-name"><button type="button" class="dialog-close" id="dialog-close" aria-label="ปิดรายละเอียด">×</button><div class="dialog-main"><div class="dialog-visual"><div class="dialog-art" id="dialog-art" aria-hidden="true"></div><span class="dialog-image-note">ภาพจำลอง · ไม่ตามมาตราส่วน</span></div><div class="dialog-copy"><p class="eyebrow" id="dialog-kicker"></p><h2 id="dialog-name" tabindex="-1"></h2><p class="dialog-thai" id="dialog-thai"></p><div class="dialog-distance" id="dialog-distance"></div><p class="dialog-description" id="dialog-description"></p><div class="dialog-fact"><span aria-hidden="true">✦</span><p id="dialog-fact"></p></div><div class="dialog-sources"><span class="eyebrow">อ่านจากแหล่งต้นทาง</span><div id="dialog-sources"></div></div></div></div><div class="dialog-navigation"><button id="dialog-prev" type="button">← จุดหมายก่อนหน้า</button><span id="dialog-index" aria-live="polite" aria-atomic="true"></span><button id="dialog-next" type="button">จุดหมายถัดไป →</button></div></dialog>
+</body>
+</html>
