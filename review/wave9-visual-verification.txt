@@ -1,0 +1,59 @@
+LIGHTYEAR — dense visual detail across all scenes
+2026-10-13. User scope: improve ALL scenes to feel as detailed as Earth; nebula
+style should resemble astronomical photographs, with dense fine structure.
+
+Current implementation was inspected and screenshots captured before editing.
+Observed: Orion was faint, smooth, additive smoke with four round bright dots;
+the red photosphere was freckled noise; galaxies lacked fine dark dust structure.
+Custom output shaders lacked the tone-mapping transform used by Earth's surface.
+
+Changes
+- Earth surface/cloud maps, geometry, rotation and cloud-weather code retained.
+  Earth atmospheric shells keep the previous un-tonemapped output appearance.
+- New reusable stellar surfaces: evolving cellular convection, fine filaments,
+  dark magnetic regions, derivative relief; blue-white photospheres with softer
+  contrast; brown-dwarf advected copper cloud decks and vortices.
+- Real spherical corona shells, weather strands and plasma particles; finer
+  partially emissive loop strands; broad smooth Vega disk plus9200dust particles.
+- Oort: expanded explanatory irregular icy body with fine ridge/grain shading,
+  distantSun and sparse surrounding objects, not a wall of icy debris.
+- Interstellar: licensed real whole-sky photo projected onto a dome, with distant
+  star points. This is anEarth-view panorama used illustratively, not measured
+  sky coordinates from a location2–3lightyears away.
+- Orion and Pleiades:4K observational textures on curved layered gas sheets;
+  dark dust attenuates background; photograph-colored3D points remain at side
+  angles. Relief, layering and slow advection are illustrative, not recovered3D.
+- Galaxies: observational textures blended into inclined disk/stellar populations,
+  diffuse bulge, fine dust lanes and asymmetricalLMC star-forming structures.
+- Black hole: differential orbiting gas filaments, disk thickness and illustrative
+  far-side light arcs; no claim of exactGR orEHT reconstruction.
+- Reused inspector expanded from7 to13scenes, with39feature points total.
+  Credits/source images/filter-colour interpretation and licences are visible.
+- Explicit image-loading feedback; uploaded textures are not marked ready before
+  actual image data arrives. Sources are locally hosted, CC BY4.0 attributed.
+
+Verification
+- Authored module syntax and Git whitespace checks passed.
+- Actual browser rendered Earth and all12landmarks; all13have3feature buttons.
+- All5 newly photographed scene families reported actual texture-loaded state:
+  interstellar, Pleiades, Orion, LMC, Andromeda. Shader compile errors:none.
+- A texture-update warning in an earlier revision was corrected; no additional
+  warnings appeared in later tests. Earlier entries remain in the tab's log history.
+- Actual screenshots were compared against Earth and pre-change Orion/Proxima/
+  galaxy views. Galaxy darkness, overly wide dust lanes, harsh brown bands,
+  cool-star halo rings and the cropped icy body were revised after viewing.
+- Orion credit button opens the existing inspector and expanded sources.
+  Selecting dark dust updates the explanation; Escape closes and restores focus.
+-390x844viewport: paragraph12px, no horizontal overflow; inspector and controls
+  usable. Device size is simulated, not a physicalphone.
+- Dragging around Orion visibly changes perspective/layer parallax; reset,
+  pause/resume and environment audio still work. Running audio emitted a nonzero
+  post-master signal in the actual browser; user speakers not tested.
+- Component-construction/disposal checks for stars/galaxies use actualThree
+  geometry, with browser verification for GPU rendering. Not anFPS benchmark.
+
+Limits
+No claim of catalogue-accurate3D positions, real-time orbital/weather speeds,
+literal naked-eye colours, measured stellar surface maps or exact gravitational
+ray tracing. Visual quality remains a user judgement. Real-phoneGPU performance,
+GPU-unavailable behaviour and physical speaker audibility were not verified.

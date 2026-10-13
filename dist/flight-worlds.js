@@ -1,5 +1,9 @@
 import * as THREE from './vendor/three.module.js';
-import { addStellarWeather, addDustDisk } from './flight-effects.js?v=5';
+import { addStellarWeather, addDustDisk } from './flight-effects.js?v=9.5';
+import { enhancedStarMaterial, addDetailedCorona } from './stellar-surfaces.js?v=9.5';
+import { addPhotographicNebula } from './nebula-renderer.js?v=9.5';
+import { addDetailedGalaxy } from './galaxy-renderer.js?v=9.5';
+import { addDetailedIce, addInterstellarContext, addAccretionDetail } from './deep-space-details.js?v=9.5';
 
 // Distances, scales and animation speeds are compressed for exploration.
 // Spheres, atmospheric shells and depth-bearing particles are artist concepts.
@@ -39,45 +43,6 @@ void main() {
   gl_Position = projectionMatrix * mv;
 }`;
 
-const starFragment = `
-uniform vec3 uColor;
-uniform float uTime;
-uniform float uSeed;
-uniform float uBrown;
-varying vec3 vLocal;
-varying vec3 vNormal;
-varying vec3 vView;
-${noiseGLSL}
-void main() {
-  vec3 p = vLocal;
-  float face = max(0.0, dot(normalize(vNormal), normalize(vView)));
-  vec3 drift=vec3(sin(p.y*5.0+uTime*.09),cos(p.x*4.0-uTime*.07),sin(p.z*6.0+uTime*.06));
-  vec3 flow = p * 8.0 + vec3(uSeed, uTime * 0.09, 0.0) + drift*.35;
-  float broad = fbm(flow);
-  float fine = noise3(p * 125.0 + vec3(uSeed, uTime * 0.7, 0) + drift);
-  float granule = fbm(p * 72.0 + vec3(uTime*.22, uTime * .38, uSeed)+drift*.6);
-  float brightPatch = smoothstep(0.6, 0.82, broad);
-  float cells = smoothstep(0.28,0.72,granule);
-  vec3 hot = mix(uColor * 0.38, min(vec3(1.8), uColor * 1.7 + 0.11), cells);
-  hot *= 0.78 + fine * 0.4;
-  hot *= 0.4 + 0.6 * smoothstep(0.26,0.5,broad);
-  hot += uColor * brightPatch * 0.28;
-  if (uBrown > 0.5) {
-    float longitude=atan(p.z,p.x)+uTime*.022*(1.0+.35*sin(p.y*8.0));
-    vec3 weather=vec3(cos(longitude)*sqrt(max(0.0,1.0-p.y*p.y)),p.y,sin(longitude)*sqrt(max(0.0,1.0-p.y*p.y)));
-    float curl = fbm(weather * 5.0 + vec3(uSeed, uTime * 0.07, 0));
-    float latitude = sin(p.y * 26.0 + curl * 7.0 + granule * 1.8);
-    float clouds = smoothstep(-0.9, 0.85, latitude) * 0.5 + granule * 0.5;
-    hot = mix(vec3(0.055, 0.012, 0.007), uColor * 0.7, clouds);
-    hot += vec3(0.18, 0.048, 0.012) * smoothstep(0.67, 0.86, broad);
-    hot *= 0.46 + 0.54 * pow(face, 0.5);
-  } else {
-    hot *= 0.045 + 0.955 * pow(face, 0.68);
-  }
-  gl_FragColor = vec4(hot, 1.0);
-  #include <colorspace_fragment>
-}`;
-
 const glowFragment = `
 uniform vec3 uColor;
 uniform float uOpacity;
@@ -93,6 +58,7 @@ void main() {
   float rim = pow(1.0 - d, uPower);
   float texture = mix(1.0, 0.45 + 0.85 * fbm(vLocal * 14.0 + uTime * 0.11), uTexture);
   gl_FragColor = vec4(uColor, rim * uOpacity * texture);
+  #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
 
@@ -125,6 +91,7 @@ void main() {
   float edge = 1.0 - smoothstep(0.72, 1.0, r);
   float core = exp(-r * r * 38.0) * (1.0 - uSoft) * 0.46;
   gl_FragColor = vec4(vColor + core * 0.2, (glow + core) * edge * vOpacity);
+  #include <tonemapping_fragment>
   #include <colorspace_fragment>
 }`;
 
@@ -195,11 +162,17 @@ export function createWorld(id) {
   const own = resource => { resources.add(resource); return resource; };
   const featurePoints={
     earth:[[0,2.7,4.3],[4.3,.6,2.3],[-1.8,-1.0,4.4]],
+    oort:[[1.7,.8,7.5],[-6,-.7,-3],[-2.3,-1,0]],
+    interstellar:[[0,-3.5,-70],[12,-6,-65],[-10,4,-60]],
+    sirius:[[-1.2,.5,4],[6.2,-1.1,.6],[2.5,-.4,.2]],
+    pleiades:[[-4,2.5,2.8],[3,-1.5,2],[-2.2,-3,1.5]],
+    lmc:[[-2,.6,1.4],[5.3,-1.7,1.6],[-5.5,2,1]],
+    andromeda:[[0,0,1.6],[6,2.8,1.7],[-6.5,-3.2,.6]],
     centauri:[[0,.6,4.6],[5.1,1.6,.3],[3.2,4.7,.1]],
     barnard:[[0,.6,3.9],[4.5,1.3,.3],[2.6,4.0,.1]],
     luhman:[[-3.8,.8,3.5],[-4.2,-1.3,3.0],[3.8,-.6,2.9]],
     vega:[[0,.2,3.2],[9.2,0,.3],[-9.5,-1.0,.2]],
-    orion:[[0,1.0,1.6],[5.4,-2.0,2.0],[-5.8,2.1,1.9]],
+    orion:[[-2.8,1.0,2.8],[4,-2,2.0],[-5.3,3,1.6]],
     sagittarius:[[0,0,2.2],[5.7,-.9,1.6],[2.25,.2,1.8]],
   };
 
@@ -219,6 +192,7 @@ export function createWorld(id) {
       },
       transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
       side: THREE.FrontSide,
+      toneMapped: id !== 'earth',
     }));
     const mesh = new THREE.Mesh(own(new THREE.SphereGeometry(sphereRadius, 56, 40)), material);
     mesh.name = 'atmospheric-shell';
@@ -228,43 +202,14 @@ export function createWorld(id) {
 
   function star(parent, starRadius, color, brown = false, seed = 1) {
     const system = new THREE.Group();
-    const material = own(new THREE.ShaderMaterial({
-      vertexShader: sphereVertex, fragmentShader: starFragment,
-      uniforms: {
-        uColor: { value: new THREE.Color(color) }, uTime: timeUniform(),
-        uSeed: { value: seed }, uBrown: { value: brown ? 1 : 0 },
-      },
-    }));
-    const sphere = new THREE.Mesh(own(new THREE.SphereGeometry(starRadius, 80, 56)), material);
+    const material = enhancedStarMaterial({color,brown,seed,timeUniform,own});
+    const sphere = new THREE.Mesh(own(new THREE.SphereGeometry(starRadius, 96, 64)), material);
     sphere.name = brown ? 'brown-dwarf' : 'stellar-photosphere';
     system.add(sphere);
-    rotations.push({ object: sphere, y: brown ? 0.052 : 0.022, x: 0 });
-    if (brown) {
-      shell(system, starRadius * 1.014, '#b64b20', 0.11, 4.2);
-    } else {
-      shell(system, starRadius * 1.035, color, 0.34, 3.8, 1);
-      shell(system, starRadius * 1.16, color, 0.048, 4.1, 1);
-      const lightMaterial=own(new THREE.ShaderMaterial({
-        transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-        uniforms:{uColor:{value:new THREE.Color(color)},uTime:timeUniform()},
-        vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-        fragmentShader:`varying vec2 vUv;uniform vec3 uColor;uniform float uTime;
-          void main(){vec2 p=(vUv-.5)*2.0;float r=length(p);float a=atan(p.y,p.x);
-            float corona=exp(-pow((r-.455)/.16,2.0))*smoothstep(.41,.48,r)*(1.0-smoothstep(.8,1.0,r));
-            float rays=.76+.24*sin(a*49.0+sin(a*13.0+uTime*.12));
-            gl_FragColor=vec4(uColor+.06,corona*rays*.15);
-            #include <colorspace_fragment>
-          }`,
-      }));
-      const lightHalo=new THREE.Mesh(own(new THREE.PlaneGeometry(starRadius*4.4,starRadius*4.4)),lightMaterial);
-      system.add(lightHalo);
-      cameraUpdates.push(cameraPosition=>{system.updateWorldMatrix(true,false);lightHalo.lookAt(cameraPosition);});
-      if (color === '#ff632b' || color === '#ed4b22') {
-        motions.push(addStellarWeather(sphere,starRadius,own));
-      }
-    }
-    parent.add(system);
-    return system;
+    rotations.push({object:sphere,y:brown?.052:.022,x:0});
+    addDetailedCorona(system,sphere,starRadius,color,own,timeUniform,motions,cameraUpdates,{brown});
+    if(color==='#ff632b'||color==='#ed4b22')motions.push(addStellarWeather(sphere,starRadius,own));
+    parent.add(system);return system;
   }
 
   function particleCloud(parent, list, { soft = 0, pointScale = 460, maxSize = 15, opacity = 1, flow = 0 } = {}) {
@@ -366,8 +311,9 @@ export function createWorld(id) {
   }
 
   function buildOort() {
-    radius = 22; cameraDistance = 31;
-    star(group, 0.34, '#ffe5a5', false, 8);
+    radius = 22; cameraDistance = 25;
+    const distantSun=star(group,.34,'#ffe5a5',false,8);distantSun.position.set(-6,-.7,-3);
+    addDetailedIce(group,{own,rotations});
     const iceMaterial = own(new THREE.MeshPhongMaterial({ color: '#cad8e0', emissive: '#53778c', emissiveIntensity: 0.13, shininess: 7 }));
     const geometry = own(new THREE.IcosahedronGeometry(0.055, 1));
     for (let i = 0; i < 20; i++) {
@@ -409,96 +355,15 @@ export function createWorld(id) {
   }
 
   function buildPleiades() {
-    radius = 12.2; cameraDistance = 29;
-    const locations = [[-5, 2, 1], [-2.7, 4.6, -1.8], [0.9, 1.9, 1.2], [4.3, 3.2, -1.9], [5.8, -1.2, 0.7], [-0.8, -2.4, 2.1], [-3.9, -1.7, -1.1]];
-    const glowGeometry=own(new THREE.PlaneGeometry(2.6,2.6));
-    const glowMaterial=own(new THREE.ShaderMaterial({
-      transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending,
-      vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-      fragmentShader:`varying vec2 vUv;
-        void main(){float r=length(vUv-.5)*2.0;if(r>1.0)discard;
-          float halo=exp(-r*r*9.0)*.16;float core=exp(-r*r*140.0);
-          gl_FragColor=vec4(mix(vec3(.18,.42,.95),vec3(1.0),core),halo+core);
-          #include <colorspace_fragment>
-        }`,
-    }));
-    locations.forEach((position, index) => {
-      const body = star(group, 0.07 + index % 3 * 0.02, '#c6e9ff', false, index * 23 + 1);
-      body.position.set(...position);
-      shell(body, 0.48 + index % 3 * 0.05, '#6bb7ff', 0.05, 2.4);
-      const glow=new THREE.Mesh(glowGeometry,glowMaterial);body.add(glow);
-      cameraUpdates.push(cameraPosition=>{group.updateWorldMatrix(true,false);glow.lookAt(cameraPosition);});
-    });
-    const mist = [];
-    for (let i = 0; i < 2200; i++) {
-      const center = locations[Math.floor(random() * locations.length)];
-      const x = gaussian(random) * 1.4;
-      const y = gaussian(random) * 0.52 + Math.sin(x * 2) * 0.35;
-      mist.push({ position: [center[0] + x, center[1] + y, center[2] + gaussian(random) * 0.7], color: '#376cb2', size: 0.8 + random() * 0.9, alpha: 0.07 });
-    }
-    particleCloud(group, mist, { soft: 1, maxSize: 29,flow:.22 });
-    distantPoints(group, 190, 11, 0.5);
+    const framing=addPhotographicNebula(group,{id:'pleiades',own,timeUniform,cameraUpdates});
+    radius=framing.radius;cameraDistance=framing.cameraDistance;
+    distantPoints(group,110,16,.22);
   }
 
   function buildOrion() {
-    radius = 13.5; cameraDistance = 30;
-    const nebula = new THREE.Group();
-    group.add(nebula);
-    const clouds = [];
-    const tones = ['#b44087', '#ad3980', '#743db0', '#356bc4', '#53a4b9', '#dc7baf'];
-    for (let i = 0; i < 1800; i++) {
-      const t = random() * TAU;
-      const branch = Math.floor(random() * 3);
-      const length = 3.0 + random() * 5.8;
-      const x = Math.cos(t + branch * 0.65) * length * 0.98 + gaussian(random) * 0.65;
-      const y = Math.sin(t * 1.15 + branch) * length * 0.55 + Math.sin(x * 0.6) * 1.8 + gaussian(random) * 0.5;
-      const z = Math.sin(t * 2.0 + branch) * 2.0 + gaussian(random) * (0.5 + random() * 1.3);
-      const tone = tones[branch * 2 + (Math.sin(t * 1.3) > 0 ? 1 : 0)];
-      clouds.push({ position: [x, y, z], color: tone, size: 0.8 + random() * 1.2, alpha: 0.015 + random() * 0.015 });
-    }
-    particleCloud(nebula, clouds, { soft: 1, maxSize: 36,flow:.42 });
-    // Integrate emission through a depth-bearing procedural gas volume.
-    // This is an artist concept of a star-forming cloud, not an observational map.
-    const gasMaterial=own(new THREE.ShaderMaterial({
-      transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-      uniforms:{uTime:timeUniform(),uCamera:{value:new THREE.Vector3(0,0,40)}},
-      vertexShader:`varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-      fragmentShader:`uniform float uTime;uniform vec3 uCamera;varying vec3 vLocal;${noiseGLSL}
-        void main(){vec3 ray=normalize(vLocal-uCamera);vec3 p=vLocal+ray*.04;vec3 emission=vec3(0);float alpha=0.0;
-          for(int i=0;i<32;i++){
-            if(abs(p.x)>12.05||abs(p.y)>7.05||abs(p.z)>5.05)break;
-            vec3 eddy=vec3(sin(p.y*.5+uTime*.07),cos(p.x*.4+uTime*.06),sin(p.z*.6+uTime*.055));
-            vec3 q=p*.32-vec3(uTime*.055,uTime*.024,0)+eddy*.22;
-            float n=fbm(q*3.0);float tendrils=fbm(q*7.0+vec3(n*3.5));
-            float y=p.y+sin(p.x*.43+uTime*.05)*1.6;
-            float form=exp(-p.x*p.x/62.0-y*y/7.0-p.z*p.z/10.0);
-            form+=exp(-(p.x+4.0)*(p.x+4.0)/12.0-(p.y-2.0)*(p.y-2.0)/9.0-p.z*p.z/7.0)*.65;
-            form+=exp(-(p.x-4.5)*(p.x-4.5)/12.0-(p.y+2.4)*(p.y+2.4)/5.0-p.z*p.z/7.0)*.7;
-            float density=max(0.0,n*.7+tendrils*.5-.34)*form;
-            float a=clamp(density*.17,0.0,.24);
-            vec3 color=mix(vec3(.14,.32,.70),vec3(1.0,.16,.39),smoothstep(-6.0,5.0,p.x));
-            color=mix(color,vec3(.65,.50,.89),smoothstep(.5,.8,tendrils)*.5);
-            float centerLight=exp(-dot(p,p)*.045);
-            color+=vec3(.44,.52,.70)*centerLight;
-            emission+=(1.0-alpha)*color*a*2.4;alpha+=(1.0-alpha)*a;
-            p+=ray*.47;
-          }
-          gl_FragColor=vec4(emission,alpha*.9);
-          #include <colorspace_fragment>
-        }`,
-    }));
-    const volume=new THREE.Mesh(own(new THREE.BoxGeometry(24,14,10)),gasMaterial);
-    nebula.add(volume);
-    cameraUpdates.push(cameraPosition=>{
-      volume.updateWorldMatrix(true,false);
-      gasMaterial.uniforms.uCamera.value.copy(cameraPosition);
-      volume.worldToLocal(gasMaterial.uniforms.uCamera.value);
-    });
-    [[-0.7, 0.6, 1.5], [0.2, 1.1, 1.6], [1.0, 0.5, 1.1], [0.2, -0.1, 1.7]].forEach((position, index) => {
-      const body = star(nebula, 0.11 + index % 2 * 0.035, '#e2edff', false, index * 27);
-      body.position.set(...position);
-    });
-    distantPoints(group, 170, 12.5, 0.46);
+    const framing=addPhotographicNebula(group,{id:'orion',own,timeUniform,cameraUpdates});
+    radius=framing.radius;cameraDistance=framing.cameraDistance;
+    distantPoints(group,140,17,.23);
   }
 
   function buildBlackHole() {
@@ -523,7 +388,8 @@ export function createWorld(id) {
           float edge=smoothstep(2.35,2.68,r)*(1.0-smoothstep(5.3,7.8,r));
           vec3 col=mix(vec3(0.64,0.13,0.018),vec3(1.4,0.97,0.46),pow(heat,3.0));
           gl_FragColor=vec4(col,edge*rings*spiral*(0.35+heat*0.58));
-          #include <colorspace_fragment>
+          #include <tonemapping_fragment>
+  #include <colorspace_fragment>
         }`,
       uniforms: { uTime: timeUniform() }, side: THREE.DoubleSide,
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -544,7 +410,8 @@ export function createWorld(id) {
         gl_PointSize=clamp(38.0/max(1.0,-mv.z),1.0,3.0);vHeat=1.0-smoothstep(2.5,7.4,r);}`,
       fragmentShader:`varying float vHeat;void main(){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;
         gl_FragColor=vec4(mix(vec3(.85,.24,.035),vec3(1.0,.9,.61),vHeat),exp(-r*r*4.0)*(.12+vHeat*.28));
-        #include <colorspace_fragment>
+        #include <tonemapping_fragment>
+  #include <colorspace_fragment>
       }`,
     }));
     const gasFlow=new THREE.Points(flowGeometry,flowMaterial);gasFlow.frustumCulled=false;disk.add(gasFlow);
@@ -553,96 +420,30 @@ export function createWorld(id) {
     const photonRing=new THREE.Mesh(own(new THREE.TorusGeometry(2.22,.024,10,128)),own(new THREE.MeshBasicMaterial({color:'#ffd5a0',transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending})));
     group.add(photonRing);
     cameraUpdates.push(cameraPosition=>{group.updateWorldMatrix(true,false);photonRing.lookAt(cameraPosition);});
+    addAccretionDetail(group,disk,{own,timeUniform,cameraUpdates});
     distantPoints(group, 95, 14, 0.33);
   }
 
   function buildGalaxy(irregular = false) {
-    radius = irregular ? 14.5 : 18.2;
-    cameraDistance = irregular ? 32 : 40;
-    const galaxy = new THREE.Group();
-    galaxy.rotation.set(irregular ? 0.35 : 0.93, irregular ? -0.18 : 0.07, irregular ? -0.21 : -0.29);
-    group.add(galaxy);
-    const stars = [], haze = [];
-    if (irregular) {
-      const knots = [[-5.6, 1.4, 1.2], [-1.2, 1, 0], [2.8, -0.1, -0.6], [6.1, -1.7, 0.5], [0.3, -4.1, 0.7]];
-      for (let i = 0; i < 10000; i++) {
-        const bar = random() < 0.46;
-        const knot = knots[Math.floor(random() * knots.length)];
-        const x = bar ? gaussian(random) * 4.9 : knot[0] + gaussian(random) * 2.0;
-        const y = bar ? gaussian(random) * 1.27 : knot[1] + gaussian(random) * 1.6;
-        const z = gaussian(random) * 0.8 + (bar ? 0 : knot[2]);
-        const color = random() < 0.15 ? '#d291d1' : random() < 0.5 ? '#accfff' : '#e4daca';
-        stars.push({ position: [x, y, z], color, size: 0.038 + random() ** 4 * 0.18, alpha: 0.45 + random() * 0.45 });
-        if (i % 5 === 0) haze.push({ position: [x, y, z], color: bar ? '#45588b' : '#76457b', size: 0.7 + random() * 0.8, alpha: 0.022 });
-      }
-      const birthCloud = [];
-      for (let i = 0; i < 470; i++) {
-        birthCloud.push({ position: [5.4 + gaussian(random) * 0.8, -1.7 + gaussian(random) * 0.58, 0.95 + gaussian(random) * 0.48], color: random() < 0.5 ? '#c15996' : '#777db8', size: 0.45 + random() * 0.65, alpha: 0.034 });
-      }
-      particleCloud(galaxy, birthCloud, { soft: 1, maxSize: 24 });
-    } else {
-      for (let i = 0; i < 15500; i++) {
-        const core = random() < 0.24;
-        let x, y, z, color;
-        if (core) {
-          x = gaussian(random) * 1.2; y = gaussian(random) * 1.16; z = gaussian(random) * 0.72;
-          color = random() > 0.17 ? '#ffdba7' : '#fff1d7';
-        } else {
-          const r = 1.9 + Math.pow(random(), 0.7) * 13.2;
-          const arm = Math.floor(random() * 2) * Math.PI;
-          const angle = arm + Math.log(r + 0.5) * 2.13 + gaussian(random) * (0.07 + r * 0.011);
-          x = Math.cos(angle) * r + gaussian(random) * 0.17;
-          y = Math.sin(angle) * r + gaussian(random) * 0.17;
-          z = gaussian(random) * (0.10 + r * 0.017);
-          color = r < 4.2 ? '#e8cbac' : random() < 0.19 ? '#dba6cb' : '#b3cff0';
-        }
-        stars.push({ position: [x, y, z], color, size: core ? 0.052 + random() * 0.11 : 0.035 + random() ** 4 * 0.19, alpha: 0.46 + random() * 0.47 });
-        if (i % 6 === 0) haze.push({ position: [x + gaussian(random) * 0.33, y + gaussian(random) * 0.33, z], color: core ? '#be803e' : '#4265a3', size: core ? 0.64 : 0.9 + random() * 0.65, alpha: core ? 0.036 : 0.025 });
-      }
-      // A very faint diffuse disk connects arms without flattening the star field.
-      for (let i = 0; i < 1700; i++) {
-        const r = Math.sqrt(random()) * 14.8, angle = random() * TAU;
-        haze.push({ position: [Math.cos(angle) * r, Math.sin(angle) * r, gaussian(random) * 0.22], color: '#404b70', size: 0.65 + random() * 0.65, alpha: 0.013 });
-      }
-    }
-    const glowMaterial=own(new THREE.ShaderMaterial({
-      transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
-      uniforms:{uTime:timeUniform(),uIrregular:{value:irregular?1:0}},
-      vertexShader:`varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-      fragmentShader:`varying vec3 vLocal;uniform float uTime;uniform float uIrregular;${noiseGLSL}
-        void main(){vec2 p=vLocal.xy;float r=length(p);float n=fbm(vec3(p*.8,uTime*.006));
-          float density;vec3 color;
-          if(uIrregular>.5){
-            float bar=exp(-p.x*p.x/36.0-p.y*p.y/2.2);
-            float knots=exp(-dot(p-vec2(-5.5,1.4),p-vec2(-5.5,1.4))/7.0);
-            knots+=exp(-dot(p-vec2(5.4,-1.6),p-vec2(5.4,-1.6))/5.0);
-            knots+=exp(-dot(p-vec2(.3,-4.1),p-vec2(.3,-4.1))/6.0)*.6;
-            density=(bar*.38+knots*.23)*smoothstep(.2,.65,n);
-            color=mix(vec3(.2,.31,.58),vec3(.8,.62,.55),bar*.65);
-          }else{
-            float a=atan(p.y,p.x);float arm=exp(-pow(sin(a-log(r+.5)*2.13)*6.0,2.0));
-            float outer=1.0-smoothstep(9.0,15.4,r);float inner=smoothstep(1.0,3.4,r);
-            float core=exp(-r*r/3.0);float halo=exp(-r*r/12.0);
-            density=outer*inner*(arm*.23+.018)*(.35+n*.9)+core*.87+halo*.065;
-            color=mix(vec3(.24,.36,.67),vec3(1.0,.73,.39),clamp(core+halo*.55,0.0,1.0));
-          }
-          gl_FragColor=vec4(color*1.7,clamp(density,0.0,.94));
-          #include <colorspace_fragment>
-        }`,
-    }));
-    const lightDisk=new THREE.Mesh(own(new THREE.PlaneGeometry(irregular?29:32,irregular?22:32)),glowMaterial);
-    lightDisk.position.z=-.06;
-    galaxy.add(lightDisk);
-    particleCloud(galaxy, haze, { soft: 1, maxSize: 29 });
-    particleCloud(galaxy, stars, { maxSize: 7, pointScale: 510 });
-    distantPoints(group, 95, radius * 1.3, 0.28);
+    const observationTexture=new THREE.TextureLoader().load(new URL(`./assets/observations/${irregular?'lmc-infrared.jpg':'andromeda-optical.jpg'}`,import.meta.url).href,texture=>{
+      if(disposed){texture.dispose();return;}texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;group.userData.observationTexture=id;
+    },undefined,()=>{group.userData.observationTexture='unavailable';});
+    const framing=addDetailedGalaxy(group,{irregular,own,timeUniform,random,particleCloud,cameraUpdates,observationTexture,
+      observationScale:irregular?[14.5,11.5]:[16.7,16.7],observationStrength:.96});
+    radius=framing.radius;cameraDistance=framing.cameraDistance;
+    const model=group.getObjectByName(irregular?'lmc-asymmetric-populations':'andromeda-populations-and-dust');
+    if(!irregular)model.rotation.x=1.30;
+    const points=irregular?[[0,0,.7],[-4.35,2.5,.8],[6.5,2,.4]]:[[0,0,.6],[8,3.3,.5],[-7.1,-3.5,.4]];
+    featurePoints[id]=points.map(point=>new THREE.Vector3(...point).applyEuler(model.rotation).toArray());
+    distantPoints(group,95,radius*1.3,.23);
   }
 
   if (id === 'earth') buildEarth();
   else if (id === 'oort') buildOort();
   else if (id === 'interstellar') {
     radius = 22; cameraDistance = 28;
-    distantPoints(group, 27, 35, 0.38);
+    addInterstellarContext(group,{own,timeUniform});
+    distantPoints(group, 150, 35, .38);
   }
   else if (['centauri', 'barnard', 'luhman', 'sirius', 'vega'].includes(id)) buildStars();
   else if (id === 'pleiades') buildPleiades();

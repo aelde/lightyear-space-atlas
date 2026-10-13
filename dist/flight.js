@@ -1,11 +1,11 @@
 import * as THREE from './vendor/three.module.js';
 import { landmarks } from './landmarks.js?v=3';
 import { selectExhibit, openDetail, escapeHtml } from './app.js?v=5';
-import { createWorld } from './flight-worlds.js?v=5';
+import { createWorld } from './flight-worlds.js?v=9.5';
 import { createSpaceField } from './flight-field.js?v=4';
 import { createSpaceAudio } from './flight-audio.js?v=7';
 import { soundProfiles, soundScienceSource } from './sound-profiles.js?v=7';
-import { deepDetails } from './deep-details.js?v=5';
+import { deepDetails } from './deep-details.js?v=9.5';
 
 const $ = selector => document.querySelector(selector);
 const canvas = $('#flight-canvas');
@@ -97,6 +97,9 @@ function startJourney() {
     $('#flight-distance').replaceChildren(document.createTextNode(currentId==='interstellar'?'2–3':new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(item.distance)));
     const unit=document.createElement('small');unit.textContent='ปีแสง';$('#flight-distance').append(unit);
     $('#flight-location-note').textContent=directions[currentIndex];
+    const imageCredits={orion:'ภาพจริง ESO/G. Beccari',pleiades:'ภาพจริง NOIRLab/NSF/AURA',interstellar:'ภาพจริง ESO/S. Brunier',andromeda:'ภาพจริง Local Group Survey / T.A. Rector',lmc:'ภาพอินฟราเรด ESO/VMC Survey'};
+    $('#flight-image-note').hidden=!imageCredits[currentId];
+    $('#flight-image-credit').textContent=imageCredits[currentId]||'';
     $('#flight-index').innerHTML=`${String(currentIndex).padStart(2,'0')} <i>/</i> 12`;
     $('#flight-prev').disabled=currentIndex===0;
     $('#flight-next').disabled=currentIndex===12;
@@ -140,11 +143,19 @@ function startJourney() {
     $('.flight-caption').setAttribute('aria-hidden',String(inspecting));
   }
   $('#flight-inspect').addEventListener('click',()=>{setInspect(!inspecting);if(inspecting)$('#close-inspector').focus({preventScroll:true});});
+  $('#flight-image-info').addEventListener('click',()=>{setInspect(true);$('.inspector-more').open=true;$('#close-inspector').focus({preventScroll:true});});
   $('#close-inspector').addEventListener('click',()=>{setInspect(false);$('#flight-inspect').focus({preventScroll:true});});
   document.addEventListener('click',event=>{const feature=event.target.closest('[data-feature]');if(feature)showFeature(Number(feature.dataset.feature));});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&inspecting){setInspect(false);$('#flight-inspect').focus({preventScroll:true});}});
   $('#effect-speed').addEventListener('change',event=>{effectRate=Number(event.target.value);});
   function updateAudioUi(){
+    const imageState=world.group.userData.observationTexture;
+    const photographed=['orion','pleiades','interstellar','andromeda','lmc'].includes(currentId);
+    canvas.dataset.observationState=currentId==='earth'?(world.group.userData.earthTexture==='NASA day map'?'loaded':'pending'):!photographed?'modeled':imageState===currentId?'loaded':imageState==='unavailable'?'unavailable':'pending';
+    if(!$('#flight-image-note').hidden){
+      const imageCredits={orion:'ภาพจริง ESO/G. Beccari',pleiades:'ภาพจริง NOIRLab/NSF/AURA',interstellar:'ภาพจริง ESO/S. Brunier',andromeda:'ภาพจริง Local Group Survey / T.A. Rector',lmc:'ภาพอินฟราเรด ESO/VMC Survey'};
+      $('#flight-image-credit').textContent=imageState===currentId?imageCredits[currentId]:imageState==='unavailable'?'ภาพรายละเอียดโหลดไม่สำเร็จ · ใช้ฉากจำลอง':'กำลังโหลดภาพรายละเอียด…';
+    }
     const status=audio.getStatus(),button=$('#flight-sound');
     button.setAttribute('aria-pressed',String(status.enabled));button.setAttribute('aria-label',status.enabled?'ปิดเสียงประกอบ':'เปิดเสียงประกอบ');button.dataset.state=status.state;
     $('#sound-mixer').hidden=!status.enabled;$('#journey').classList.toggle('sound-enabled',status.enabled);

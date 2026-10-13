@@ -28,7 +28,7 @@ export function addStellarWeather(sphere, radius, own) {
   const material=own(new THREE.ShaderMaterial({
     uniforms,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
     vertexShader:`attribute vec3 aNormal;attribute vec3 aTangent;attribute vec3 aBinormal;attribute float aSeed;
-      uniform float uTime;uniform float uRadius;uniform float uWidth;varying float vEdge;varying float vEnergy;varying float vAlong;
+      uniform float uTime;uniform float uRadius;uniform float uWidth;varying float vEdge;varying float vEnergy;varying float vAlong;varying float vStrand;
       void main(){float s=position.x;float phase=fract(uTime/17.0+aSeed);
         float life=smoothstep(.03,.25,phase)*(1.0-smoothstep(.64,.96,phase));
         float arch=pow(max(0.0,sin(s*3.14159265)),.8);
@@ -37,12 +37,13 @@ export function addStellarWeather(sphere, radius, own) {
         p+=aTangent*uRadius*(cos(s*3.14159265)*(.16+life*.05)+shear);
         p+=aBinormal*uRadius*(position.z*.005+sin(s*6.28+uTime*.35)*.025*arch*life);
         p+=aBinormal*position.y*uRadius*(.004+life*.006)*uWidth;
-        vEdge=position.y;vEnergy=life;vAlong=arch;
+        vEdge=position.y;vEnergy=life;vAlong=arch;vStrand=position.x;
         gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
-    fragmentShader:`uniform float uOpacity;varying float vEdge;varying float vEnergy;varying float vAlong;
+    fragmentShader:`uniform float uOpacity;uniform float uTime;varying float vEdge;varying float vEnergy;varying float vAlong;varying float vStrand;
       void main(){float edge=1.0-smoothstep(.4,1.0,abs(vEdge));
         vec3 color=mix(vec3(.92,.20,.018),vec3(1.5,.76,.26),vEnergy*.75+vAlong*.2);
-        gl_FragColor=vec4(color,edge*(.18+.68*vEnergy)*pow(vAlong,.18)*uOpacity);
+        gl_FragColor=vec4(color,edge*(.08+.48*vEnergy)*pow(vAlong,.3)*(.45+.55*pow(.5+.5*sin(vStrand*35.0-uTime*.7),2.0))*uOpacity);
+        #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`,
   }));
@@ -72,7 +73,8 @@ export function addStellarWeather(sphere, radius, own) {
         vAlpha=(.07+eruption*.65)*(1.0-life)*sin(life*3.14159265);}`,
     fragmentShader:`varying float vAlpha;void main(){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;
       gl_FragColor=vec4(1.0,.36,.035,vAlpha*exp(-r*r*5.0));
-      #include <colorspace_fragment>
+      #include <tonemapping_fragment>
+        #include <colorspace_fragment>
     }`,
   }));
   const wind=new THREE.Points(windGeo,windMaterial);wind.name='erupting-plasma-particles';wind.frustumCulled=false;sphere.add(wind);
@@ -89,12 +91,13 @@ export function addDustDisk(parent, own, timeUniform) {
       float broad=exp(-pow((r-9.0)/3.0,2.0));float gap=1.0-.32*exp(-pow((r-8.0)/.35,2.0));
       float inner=smoothstep(4.8,6.3,r);float outer=1.0-smoothstep(11.7,13.0,r);
       float fine=.96+.04*sin(a*9.0-uTime*.18/pow(r/6.0,1.5));
-      gl_FragColor=vec4(.43,.52,.68,broad*gap*inner*outer*fine*.13);
-      #include <colorspace_fragment>
+      gl_FragColor=vec4(.43,.52,.68,broad*gap*inner*outer*fine*.23);
+      #include <tonemapping_fragment>
+        #include <colorspace_fragment>
     }`,
   }));
   disk.add(new THREE.Mesh(own(new THREE.RingGeometry(4.8,13,160,5)),material));
-  const count=5200,positions=new Float32Array(count*3),rand=new Float32Array(count);
+  const count=9200,positions=new Float32Array(count*3),rand=new Float32Array(count);
   let seed=5821;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   for(let i=0;i<count;i++){
     const r=6.0+random()*6.7;positions.set([r,random()*6.28,(random()-.5)*.21],i*3);rand[i]=random();
@@ -105,9 +108,10 @@ export function addDustDisk(parent, own, timeUniform) {
     vertexShader:`uniform float uTime;attribute float aRandom;varying float vAlpha;void main(){float r=position.x;
       float a=position.y+uTime*.07/pow(r/6.0,1.5);vec3 p=vec3(cos(a)*r,sin(a)*r,position.z);
       vec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;gl_PointSize=clamp((22.0+aRandom*25.0)/max(1.0,-mv.z),.6,2.0);
-      vAlpha=(.13+aRandom*.15)*(1.0-.4*exp(-pow((r-8.0)/.35,2.0)));}`,
+      vAlpha=(.21+aRandom*.23)*(1.0-.4*exp(-pow((r-8.0)/.35,2.0)));}`,
     fragmentShader:`varying float vAlpha;void main(){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;gl_FragColor=vec4(.7,.79,.91,exp(-r*r*7.0)*vAlpha);
-      #include <colorspace_fragment>
+      #include <tonemapping_fragment>
+        #include <colorspace_fragment>
     }`,
   }));
   const points=new THREE.Points(geometry,particles);points.frustumCulled=false;disk.add(points);

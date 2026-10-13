@@ -1,0 +1,58 @@
+LIGHTYEAR observational image textures — 2026-10-13
+
+Orion Nebula: ESO/G. Beccari
+The Orion Nebula and cluster from the VLT Survey Telescope (eso1723a).
+https://www.eso.org/public/images/eso1723a/
+Official 4000x3106 publication JPEG, copied unchanged:
+https://cdn.eso.org/images/publicationjpg/eso1723a.jpg
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+ESO policy: https://www.eso.org/public/outreach/copyright/
+Optical composite of g, r, H-alpha and i filters, not a naked-eye view.
+
+Pleiades: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage),
+R. Cool (University of Arizona) and WIYN
+M45 Pleiades / noao-m45.
+https://noirlab.edu/public/images/noao-m45/
+NOIRLab-curated AstroPix source/license record:
+https://www.astropix.org/image/noirlab/noao-m45
+Original 9700x7080 JPEG:
+https://noirlab.edu/public/media/archives/images/large/noao-m45.jpg
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+NOIRLab policy: https://noirlab.edu/public/outreach/copyright/
+Web copy resized to4000x2920 and recompressed asJPEG; no artistic raster edits.
+Optical B/V/I filter composite. Blue features are reflection dust, not flames.
+
+Presentation adaptations for both images:
+The site softens image boundaries, adjusts emission in the renderer, maps the
+photographs onto layered curved sheets and places photograph-colored points
+at illustrative depths. Very slow local flow adds a sense of movement.
+Depth, particle locations, sheet shapes and timing were designed for this
+experience; they are not a measured reconstruction of each nebula in3D.
+Attribution appears in the scene caption and full credit/license in the inspector.
+The original source images remain available at the links above underCC BY4.0.
+
+Interstellar sky panorama: ESO/S. Brunier
+The Milky Way panorama, eso0932a, a photographic360degree panorama of the
+Earth's night sky. The public4000x2000 publication JPEG is copied unchanged.
+https://www.eso.org/public/images/eso0932a/
+https://cdn.eso.org/images/publicationjpg/eso0932a.jpg
+CC BY4.0 underESO's policy at https://www.eso.org/public/outreach/copyright/
+Presentation: sphere projection, brightness adjustment and illustrative nearby
+points. This is not a measured sky from a location2–3lightyears fromEarth.
+
+Andromeda observation: Local Group Survey Team and T.A. Rector
+(University of Alaska Anchorage)
+M31 Local Group Survey U/B/V/I/H-alpha colour mosaic.
+https://www.astropix.org/image/noirlab/noao-m31lgs_ubvIha
+CC BY4.0, https://creativecommons.org/licenses/by/4.0/
+Official6000x1513 panorama resized to4000x1008, recompressed for web.
+Presentation: sampled onto an inclined artist disk; diffuse boundary, output
+brightness, 3D stars/bulge and depth were added. Not a measured3D map ofM31.
+
+LMC observation: ESO/VMC Survey
+The Large Magellanic Cloud in infrared, eso1914a.
+https://www.eso.org/public/images/eso1914a/
+CC BY4.0 under https://www.eso.org/public/outreach/copyright/
+Y/J/Ks near-infrared assigned-colour composite,3581x4000publication image.
+Recompressed for web without artistic raster edits. Presentation overlays3D
+stellar populations, gas, and illustrative depth on the observed bar/structure.
