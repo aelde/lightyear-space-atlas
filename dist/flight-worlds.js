@@ -1,4 +1,5 @@
 import * as THREE from './vendor/three.module.js';
+import { addStellarWeather, addDustDisk } from './flight-effects.js?v=5';
 
 // Distances, scales and animation speeds are compressed for exploration.
 // Spheres, atmospheric shells and depth-bearing particles are artist concepts.
@@ -50,26 +51,28 @@ ${noiseGLSL}
 void main() {
   vec3 p = vLocal;
   float face = max(0.0, dot(normalize(vNormal), normalize(vView)));
-  vec3 flow = p * 8.0 + vec3(uSeed, uTime * 0.025, 0.0);
+  vec3 drift=vec3(sin(p.y*5.0+uTime*.09),cos(p.x*4.0-uTime*.07),sin(p.z*6.0+uTime*.06));
+  vec3 flow = p * 8.0 + vec3(uSeed, uTime * 0.09, 0.0) + drift*.35;
   float broad = fbm(flow);
-  float fine = noise3(p * 125.0 + vec3(uSeed, uTime * 0.035, 0));
-  float granule = fbm(p * 44.0 + vec3(0, uTime * 0.065, uSeed));
-  float surface = 0.44 + 0.38 * broad + 0.25 * granule + 0.18 * fine;
+  float fine = noise3(p * 125.0 + vec3(uSeed, uTime * 0.7, 0) + drift);
+  float granule = fbm(p * 72.0 + vec3(uTime*.22, uTime * .38, uSeed)+drift*.6);
   float brightPatch = smoothstep(0.6, 0.82, broad);
-  float cells = smoothstep(0.34,0.66,granule);
+  float cells = smoothstep(0.28,0.72,granule);
   vec3 hot = mix(uColor * 0.38, min(vec3(1.8), uColor * 1.7 + 0.11), cells);
   hot *= 0.78 + fine * 0.4;
   hot *= 0.4 + 0.6 * smoothstep(0.26,0.5,broad);
   hot += uColor * brightPatch * 0.28;
   if (uBrown > 0.5) {
-    float curl = fbm(p * 5.0 + vec3(uSeed, uTime * 0.013, 0));
+    float longitude=atan(p.z,p.x)+uTime*.022*(1.0+.35*sin(p.y*8.0));
+    vec3 weather=vec3(cos(longitude)*sqrt(max(0.0,1.0-p.y*p.y)),p.y,sin(longitude)*sqrt(max(0.0,1.0-p.y*p.y)));
+    float curl = fbm(weather * 5.0 + vec3(uSeed, uTime * 0.07, 0));
     float latitude = sin(p.y * 26.0 + curl * 7.0 + granule * 1.8);
     float clouds = smoothstep(-0.9, 0.85, latitude) * 0.5 + granule * 0.5;
     hot = mix(vec3(0.055, 0.012, 0.007), uColor * 0.7, clouds);
     hot += vec3(0.18, 0.048, 0.012) * smoothstep(0.67, 0.86, broad);
     hot *= 0.46 + 0.54 * pow(face, 0.5);
   } else {
-    hot *= 0.20 + 0.80 * pow(face, 0.55);
+    hot *= 0.045 + 0.955 * pow(face, 0.68);
   }
   gl_FragColor = vec4(hot, 1.0);
   #include <colorspace_fragment>
@@ -88,7 +91,7 @@ ${noiseGLSL}
 void main() {
   float d = abs(dot(normalize(vNormal), normalize(vView)));
   float rim = pow(1.0 - d, uPower);
-  float texture = mix(1.0, 0.68 + 0.5 * fbm(vLocal * 14.0 + uTime * 0.015), uTexture);
+  float texture = mix(1.0, 0.45 + 0.85 * fbm(vLocal * 14.0 + uTime * 0.11), uTexture);
   gl_FragColor = vec4(uColor, rim * uOpacity * texture);
   #include <colorspace_fragment>
 }`;
@@ -100,10 +103,13 @@ varying vec3 vColor;
 varying float vOpacity;
 uniform float uPointScale;
 uniform float uMaxSize;
+uniform float uTime;
+uniform float uFlow;
 void main() {
   vColor = color;
   vOpacity = aOpacity;
-  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  vec3 wind=vec3(sin(position.y*.6+uTime*.13),cos(position.x*.5+uTime*.11),sin(position.z*.7+uTime*.09))*uFlow;
+  vec4 mv = modelViewMatrix * vec4(position+wind, 1.0);
   gl_Position = projectionMatrix * mv;
   gl_PointSize = clamp(aSize * uPointScale / max(0.2, -mv.z), 0.6, uMaxSize);
 }`;
@@ -187,6 +193,15 @@ export function createWorld(id) {
   let radius = 8;
   let cameraDistance = 18;
   const own = resource => { resources.add(resource); return resource; };
+  const featurePoints={
+    earth:[[0,2.7,4.3],[4.3,.6,2.3],[-1.8,-1.0,4.4]],
+    centauri:[[0,.6,4.6],[5.1,1.6,.3],[3.2,4.7,.1]],
+    barnard:[[0,.6,3.9],[4.5,1.3,.3],[2.6,4.0,.1]],
+    luhman:[[-3.8,.8,3.5],[-4.2,-1.3,3.0],[3.8,-.6,2.9]],
+    vega:[[0,.2,3.2],[9.2,0,.3],[-9.5,-1.0,.2]],
+    orion:[[0,1.0,1.6],[5.4,-2.0,2.0],[-5.8,2.1,1.9]],
+    sagittarius:[[0,0,2.2],[5.7,-.9,1.6],[2.25,.2,1.8]],
+  };
 
   function timeUniform() {
     const uniform = { value: 0 };
@@ -223,33 +238,36 @@ export function createWorld(id) {
     const sphere = new THREE.Mesh(own(new THREE.SphereGeometry(starRadius, 80, 56)), material);
     sphere.name = brown ? 'brown-dwarf' : 'stellar-photosphere';
     system.add(sphere);
-    rotations.push({ object: sphere, y: brown ? 0.038 : 0.012, x: 0 });
+    rotations.push({ object: sphere, y: brown ? 0.052 : 0.022, x: 0 });
     if (brown) {
       shell(system, starRadius * 1.014, '#b64b20', 0.11, 4.2);
     } else {
       shell(system, starRadius * 1.035, color, 0.34, 3.8, 1);
       shell(system, starRadius * 1.16, color, 0.048, 4.1, 1);
+      const lightMaterial=own(new THREE.ShaderMaterial({
+        transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+        uniforms:{uColor:{value:new THREE.Color(color)},uTime:timeUniform()},
+        vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+        fragmentShader:`varying vec2 vUv;uniform vec3 uColor;uniform float uTime;
+          void main(){vec2 p=(vUv-.5)*2.0;float r=length(p);float a=atan(p.y,p.x);
+            float corona=exp(-pow((r-.455)/.16,2.0))*smoothstep(.41,.48,r)*(1.0-smoothstep(.8,1.0,r));
+            float rays=.76+.24*sin(a*49.0+sin(a*13.0+uTime*.12));
+            gl_FragColor=vec4(uColor+.06,corona*rays*.15);
+            #include <colorspace_fragment>
+          }`,
+      }));
+      const lightHalo=new THREE.Mesh(own(new THREE.PlaneGeometry(starRadius*4.4,starRadius*4.4)),lightMaterial);
+      system.add(lightHalo);
+      cameraUpdates.push(cameraPosition=>{system.updateWorldMatrix(true,false);lightHalo.lookAt(cameraPosition);});
       if (color === '#ff632b' || color === '#ed4b22') {
-        const plasma=own(new THREE.MeshBasicMaterial({color:'#ffba66',transparent:true,opacity:.48,blending:THREE.AdditiveBlending,depthWrite:false}));
-        for(let loop=0;loop<7;loop++){
-          const azimuth=loop*TAU/7+.4;
-          const normal=new THREE.Vector3(Math.cos(azimuth),Math.sin(azimuth),.15*Math.sin(loop)).normalize();
-          const tangent=new THREE.Vector3(-Math.sin(azimuth),Math.cos(azimuth),0);
-          const points=[];
-          for(let step=0;step<=24;step++){
-            const t=step/24;
-            points.push(normal.clone().multiplyScalar(starRadius*(1.005+.065*Math.sin(t*Math.PI))).addScaledVector(tangent,(t-.5)*starRadius*.12));
-          }
-          const arc=new THREE.Mesh(own(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),32,starRadius*.0013,5,false)),plasma);
-          sphere.add(arc);
-        }
+        motions.push(addStellarWeather(sphere,starRadius,own));
       }
     }
     parent.add(system);
     return system;
   }
 
-  function particleCloud(parent, list, { soft = 0, pointScale = 460, maxSize = 15, opacity = 1 } = {}) {
+  function particleCloud(parent, list, { soft = 0, pointScale = 460, maxSize = 15, opacity = 1, flow = 0 } = {}) {
     const positions = new Float32Array(list.length * 3);
     const colors = new Float32Array(list.length * 3);
     const sizes = new Float32Array(list.length);
@@ -268,7 +286,7 @@ export function createWorld(id) {
     geometry.setAttribute('aOpacity', new THREE.BufferAttribute(alphas, 1));
     const material = own(new THREE.ShaderMaterial({
       vertexShader: pointsVertex, fragmentShader: pointsFragment, vertexColors: true,
-      uniforms: { uSoft: { value: soft }, uPointScale: { value: pointScale }, uMaxSize: { value: maxSize } },
+      uniforms: { uSoft: { value: soft }, uPointScale: { value: pointScale }, uMaxSize: { value: maxSize },uTime:timeUniform(),uFlow:{value:flow} },
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     }));
     const cloud = new THREE.Points(geometry, material);
@@ -307,6 +325,17 @@ export function createWorld(id) {
     clouds.rotation.y = surface.rotation.y;
     clouds.visible = false;
     clouds.name = 'earth-clouds';
+    const cloudTime=timeUniform();
+    cloudMaterial.onBeforeCompile=shader=>{
+      shader.uniforms.uCloudTime=cloudTime;
+      shader.fragmentShader='uniform float uCloudTime;\n'+shader.fragmentShader.replace('#include <alphamap_fragment>',`#ifdef USE_ALPHAMAP
+        vec2 weatherUv=vAlphaMapUv;
+        weatherUv.x+=uCloudTime*.0007*sin((weatherUv.y-.5)*6.28)+.003*sin(weatherUv.y*35.0+uCloudTime*.17);
+        weatherUv.y+=.0015*sin(weatherUv.x*30.0+uCloudTime*.12);
+        diffuseColor.a*=texture2D(alphaMap,weatherUv).g;
+        #endif`);
+    };
+    cloudMaterial.customProgramCacheKey=()=> 'earth-cloud-weather-v5';
     globe.add(clouds);
     shell(globe, 5.09, '#4fbbff', 0.51, 3.4);
     shell(globe, 5.24, '#1574cf', 0.08, 4.2);
@@ -324,6 +353,7 @@ export function createWorld(id) {
       const cloudTexture = loader.load(new URL('./assets/earth/earth-clouds.jpg', import.meta.url).href, texture => {
         if (disposed) { texture.dispose(); return; }
         texture.colorSpace = THREE.NoColorSpace;
+        texture.wrapS = THREE.RepeatWrapping;
         cloudMaterial.alphaMap = texture;
         cloudMaterial.needsUpdate = true;
         clouds.visible = true;
@@ -332,7 +362,7 @@ export function createWorld(id) {
     } catch {
       group.userData.earthTexture = 'procedural fallback';
     }
-    rotations.push({ object: surface, y: 0.026, x: 0 }, { object: clouds, y: 0.034, x: 0 });
+    rotations.push({ object: surface, y: 0.036, x: 0 }, { object: clouds, y: 0.056, x: 0 });
   }
 
   function buildOort() {
@@ -372,8 +402,9 @@ export function createWorld(id) {
       const b = star(group, 0.57, '#ffffff', false, 76);
       b.position.set(6.2, -1.1, 0.4);
     } else {
-      radius = 5.7; cameraDistance = 15;
-      star(group, 4.8, '#bedfff', false, 24);
+      radius = 13.2; cameraDistance = 26;
+      star(group, 3.2, '#bedfff', false, 24);
+      addDustDisk(group,own,timeUniform);
     }
   }
 
@@ -405,9 +436,8 @@ export function createWorld(id) {
       const y = gaussian(random) * 0.52 + Math.sin(x * 2) * 0.35;
       mist.push({ position: [center[0] + x, center[1] + y, center[2] + gaussian(random) * 0.7], color: '#376cb2', size: 0.8 + random() * 0.9, alpha: 0.07 });
     }
-    particleCloud(group, mist, { soft: 1, maxSize: 29 });
+    particleCloud(group, mist, { soft: 1, maxSize: 29,flow:.22 });
     distantPoints(group, 190, 11, 0.5);
-    rotations.push({ object: group, y: 0.0035, x: 0 });
   }
 
   function buildOrion() {
@@ -426,7 +456,7 @@ export function createWorld(id) {
       const tone = tones[branch * 2 + (Math.sin(t * 1.3) > 0 ? 1 : 0)];
       clouds.push({ position: [x, y, z], color: tone, size: 0.8 + random() * 1.2, alpha: 0.015 + random() * 0.015 });
     }
-    particleCloud(nebula, clouds, { soft: 1, maxSize: 36 });
+    particleCloud(nebula, clouds, { soft: 1, maxSize: 36,flow:.42 });
     // Integrate emission through a depth-bearing procedural gas volume.
     // This is an artist concept of a star-forming cloud, not an observational map.
     const gasMaterial=own(new THREE.ShaderMaterial({
@@ -437,19 +467,20 @@ export function createWorld(id) {
         void main(){vec3 ray=normalize(vLocal-uCamera);vec3 p=vLocal+ray*.04;vec3 emission=vec3(0);float alpha=0.0;
           for(int i=0;i<32;i++){
             if(abs(p.x)>12.05||abs(p.y)>7.05||abs(p.z)>5.05)break;
-            vec3 q=p*.32+vec3(0,uTime*.004,0);
+            vec3 eddy=vec3(sin(p.y*.5+uTime*.07),cos(p.x*.4+uTime*.06),sin(p.z*.6+uTime*.055));
+            vec3 q=p*.32-vec3(uTime*.055,uTime*.024,0)+eddy*.22;
             float n=fbm(q*3.0);float tendrils=fbm(q*7.0+vec3(n*3.5));
-            float y=p.y+sin(p.x*.43)*1.6;
+            float y=p.y+sin(p.x*.43+uTime*.05)*1.6;
             float form=exp(-p.x*p.x/62.0-y*y/7.0-p.z*p.z/10.0);
             form+=exp(-(p.x+4.0)*(p.x+4.0)/12.0-(p.y-2.0)*(p.y-2.0)/9.0-p.z*p.z/7.0)*.65;
             form+=exp(-(p.x-4.5)*(p.x-4.5)/12.0-(p.y+2.4)*(p.y+2.4)/5.0-p.z*p.z/7.0)*.7;
             float density=max(0.0,n*.7+tendrils*.5-.34)*form;
-            float a=clamp(density*.14,0.0,.22);
+            float a=clamp(density*.17,0.0,.24);
             vec3 color=mix(vec3(.14,.32,.70),vec3(1.0,.16,.39),smoothstep(-6.0,5.0,p.x));
             color=mix(color,vec3(.65,.50,.89),smoothstep(.5,.8,tendrils)*.5);
             float centerLight=exp(-dot(p,p)*.045);
             color+=vec3(.44,.52,.70)*centerLight;
-            emission+=(1.0-alpha)*color*a*2.2;alpha+=(1.0-alpha)*a;
+            emission+=(1.0-alpha)*color*a*2.4;alpha+=(1.0-alpha)*a;
             p+=ray*.47;
           }
           gl_FragColor=vec4(emission,alpha*.9);
@@ -468,8 +499,6 @@ export function createWorld(id) {
       body.position.set(...position);
     });
     distantPoints(group, 170, 12.5, 0.46);
-    rotations.push({ object: nebula, y: 0.004, x: 0.002 });
-    motions.push(time => { nebula.position.y = Math.sin(time * 0.018) * 0.17; });
   }
 
   function buildBlackHole() {
@@ -489,7 +518,8 @@ export function createWorld(id) {
           float r=length(vLocal.xy); float a=atan(vLocal.y,vLocal.x);
           float heat=1.0-smoothstep(2.5,7.8,r);
           float rings=0.73+0.27*sin(r*15.0+fbm(vec3(vLocal.xy*3.0,uTime*0.1))*8.0);
-          float spiral=0.6+0.4*fbm(vec3(cos(a-uTime*0.18)*8.0,sin(a-uTime*0.18)*8.0,r*1.8));
+          float flowAngle=a-uTime*.85/pow(r/2.5,1.5);
+          float spiral=0.45+0.55*fbm(vec3(cos(flowAngle)*11.0,sin(flowAngle)*11.0,r*1.8));
           float edge=smoothstep(2.35,2.68,r)*(1.0-smoothstep(5.3,7.8,r));
           vec3 col=mix(vec3(0.64,0.13,0.018),vec3(1.4,0.97,0.46),pow(heat,3.0));
           gl_FragColor=vec4(col,edge*rings*spiral*(0.35+heat*0.58));
@@ -504,6 +534,20 @@ export function createWorld(id) {
     const torusMaterial = own(new THREE.MeshBasicMaterial({ color: '#ffd290', transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false }));
     const innerEdge = new THREE.Mesh(own(new THREE.TorusGeometry(2.56, 0.055, 12, 128)), torusMaterial);
     disk.add(innerEdge);
+    const count=1800,orbitPositions=new Float32Array(count*3);
+    for(let i=0;i<count;i++)orbitPositions.set([2.42+random()*4.9,random()*TAU,(random()-.5)*.08],i*3);
+    const flowGeometry=own(new THREE.BufferGeometry());flowGeometry.setAttribute('position',new THREE.BufferAttribute(orbitPositions,3));
+    const flowMaterial=own(new THREE.ShaderMaterial({
+      transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime:timeUniform()},
+      vertexShader:`uniform float uTime;varying float vHeat;void main(){float r=position.x;float a=position.y-uTime*.85/pow(r/2.5,1.5);
+        vec3 p=vec3(cos(a)*r,sin(a)*r,position.z);vec4 mv=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*mv;
+        gl_PointSize=clamp(38.0/max(1.0,-mv.z),1.0,3.0);vHeat=1.0-smoothstep(2.5,7.4,r);}`,
+      fragmentShader:`varying float vHeat;void main(){float r=length(gl_PointCoord-.5)*2.0;if(r>1.0)discard;
+        gl_FragColor=vec4(mix(vec3(.85,.24,.035),vec3(1.0,.9,.61),vHeat),exp(-r*r*4.0)*(.12+vHeat*.28));
+        #include <colorspace_fragment>
+      }`,
+    }));
+    const gasFlow=new THREE.Points(flowGeometry,flowMaterial);gasFlow.frustumCulled=false;disk.add(gasFlow);
     shell(group, 2.26, '#ffb86c', 0.52, 7);
     shell(group, 2.39, '#ff9142', 0.075, 6);
     const photonRing=new THREE.Mesh(own(new THREE.TorusGeometry(2.22,.024,10,128)),own(new THREE.MeshBasicMaterial({color:'#ffd5a0',transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending})));
@@ -591,7 +635,6 @@ export function createWorld(id) {
     galaxy.add(lightDisk);
     particleCloud(galaxy, haze, { soft: 1, maxSize: 29 });
     particleCloud(galaxy, stars, { maxSize: 7, pointScale: 510 });
-    rotations.push({ object: galaxy, y: 0.0015, x: 0 });
     distantPoints(group, 95, radius * 1.3, 0.28);
   }
 
@@ -615,9 +658,10 @@ export function createWorld(id) {
 
   return {
     group, radius, cameraDistance,
+    features:(featurePoints[id]||[]).map((point,index)=>({index,point:new THREE.Vector3(...point)})),
     update(dt, time, cameraPosition) {
       if (disposed) return;
-      const delta = Math.min(0.1, Math.max(0, Number(dt) || 0));
+      const delta = Math.min(0.25, Math.max(0, Number(dt) || 0));
       elapsed += delta;
       const seconds = Number.isFinite(time) ? time : elapsed;
       timeUniforms.forEach(uniform => { uniform.value = seconds; });

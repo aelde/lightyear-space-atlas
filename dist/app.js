@@ -1,7 +1,7 @@
 import { landmarks, learningNotes } from './landmarks.js?v=3';
 
 const $ = (selector) => document.querySelector(selector);
-const escapeHtml = (value) => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const cleanThai = (value) => value.replace(/\. /g, ' ').replace(/\.$/, '');
 const crops = {oort:[24,300],interstellar:[352,300],centauri:[684,300],barnard:[24,574],luhman:[352,574],sirius:[684,574],vega:[24,906],pleiades:[352,906],orion:[684,906],sagittarius:[24,1189],lmc:[352,1189],andromeda:[684,1189]};
 const wideAssets = {centauri:'proxima-wide.jpg',barnard:'proxima-wide.jpg',luhman:'luhman-wide.jpg',sirius:'sirius-wide.jpg',vega:'vega-wide.jpg',pleiades:'pleiades-wide.jpg',orion:'orion-wide.jpg',sagittarius:'sagittarius-wide.jpg',lmc:'lmc-wide.jpg',andromeda:'andromeda-wide.jpg'};

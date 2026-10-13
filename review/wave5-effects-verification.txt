@@ -1,0 +1,20 @@
+LIGHTYEAR wave5 — animated phenomena, optional audio and visual inspection
+User clarification: visible cloud flow, slow rotation, rings/debris and solar-style plasma eruptions.
+
+Implementation:
+- Original opt-in Web Audio stereo ambient layers and short transition sweeps. No AudioContext is created on initial load. Master level fades; mute eventually suspends the context. Volume 0–100%, live RMS meter, visibility lifecycle handling.
+- Animated magnetic plasma ribbons with changing height, brightness and halo, outgoing plasma particles, photospheric granulation/advection; applied to Proxima and Barnard concepts.
+- Separate Earth surface/cloud rotation and latitude-dependent cloud texture advection; brown dwarf atmospheric flow.
+- Broad faint Vega debris disk and differently paced particle orbits; inner debris moves faster than outer. No rigid ring object is claimed.
+- Orion volumetric density/wisps flow locally; rigid rotation of Orion and whole galaxies removed. Sagittarius hot-gas texture and particles circulate with radial speed variation.
+- Optional inspector: 7 source-backed entries, 21 annotated feature types, metrics and sources. Effect tempo 0.5/1/2/4x. It is an explanatory scene, not a measured real-time data feed or GR simulation.
+- Reused existing radius, destination rail/filter and detail dialogs. Direct scene query supported, e.g. ?scene=centauri.
+
+Observed verification:
+- Browser AudioContext reached running with real post-master RMS 0.014306 and 0.019566 at 50%. Muting reached suspended with RMS0; volume UI reached 100%, 0%, then restored50%. This verifies generation/state, not physical loudspeaker audibility on the user device.
+- Desktop1440x1000 and mobile viewport390x844/320x800. Inspector and tempo selector work; selected feature changes title/text. Escape closes and restores focus; caption is inert during inspection.
+- All12 landmarks created/rendered and showed correct scene headings; no captured browser warning/error logs in this local pass.
+- Motion capture contains171 actual browser screenshots over10.035s at normal effect tempo. First/last frames visibly change plasma shape/position and photosphere. Encoding preserves captured elapsed time; it has no soundtrack and is a visual preview.
+- Syntax checks passed for authored modules, Git whitespace check excluding unmodified upstream Three.js vendor source passed.
+
+Limits: mobile is viewport simulation, not a physical phone test. GPU-unavailable fallback, reduced-motion preference and physical sound output were not exercised on hardware. Astrophenomena are source-backed, but detailed shapes, coordinates, brightness, dimensions and timing are visual interpretations. Sources are in deep-details.js.

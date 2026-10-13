@@ -1,8 +1,10 @@
 import * as THREE from './vendor/three.module.js';
 import { landmarks } from './landmarks.js?v=3';
-import { selectExhibit, openDetail } from './app.js?v=4';
-import { createWorld } from './flight-worlds.js?v=4';
+import { selectExhibit, openDetail, escapeHtml } from './app.js?v=5';
+import { createWorld } from './flight-worlds.js?v=5';
 import { createSpaceField } from './flight-field.js?v=4';
+import { createSpaceAudio } from './flight-audio.js?v=5';
+import { deepDetails } from './deep-details.js?v=5';
 
 const $ = selector => document.querySelector(selector);
 const canvas = $('#flight-canvas');
@@ -36,11 +38,14 @@ function startJourney() {
   scene.add(sun, sun.target);
   const field = createSpaceField();
   scene.add(field.group);
+  const audio=createSpaceAudio();
   let world = createWorld('earth');
   scene.add(world.group);
   let currentId='earth', currentIndex=0, retired=null, transition=null;
   let yaw=0, pitch=.05, zoom=1, smoothYaw=0, smoothPitch=.05, smoothZoom=1;
   let paused=reducedMotion, touring=false, tourElapsed=0, animationTime=0, lastTime=0;
+  let effectTime=0,effectRate=1,lastSoundUpdate=0,inspecting=false,activeFeature=0;
+  let inspectPreviousZoom=null,soundMixerTimer=null;
   let pointer=null;
   let width=1,height=1,pixelRatio=1;
   const center=new THREE.Vector3();
@@ -50,6 +55,8 @@ function startJourney() {
   const transitionStart=new THREE.Vector3();
   const focusStart=new THREE.Vector3();
   const sunlightOffset=new THREE.Vector3(-22,13,24);
+  const featureProjection=new THREE.Vector3();
+  let featureButtons=[];
   const directions = ['จุดเริ่มต้นของการสำรวจ', 'ขอบเขตที่ยังไม่แน่นอน', 'บริเวณระหว่างดวงดาว', 'ฉากนี้แสดง Proxima Centauri', 'ดาวแคระแดง', 'ดาวแคระน้ำตาลคู่', 'ระบบดาวคู่', 'ดาวฤกษ์สีขาวอมฟ้า', 'กระจุกดาว', 'บริเวณกำเนิดดาว', 'ภาพแนวคิดบริเวณหลุมดำ', 'กาแล็กซีบริวารรูปร่างไม่แน่นอน', 'กาแล็กซีเพื่อนบ้านขนาดใหญ่'];
 
   function fitDistance(){const framing=['pleiades','orion','lmc','andromeda'].includes(currentId)?1.18:1.36;return world.cameraDistance*Math.max(framing, 1/camera.aspect);}
@@ -100,9 +107,71 @@ function startJourney() {
       if(index===currentIndex)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');
     });
     syncDestinationSelection();
+    renderInspector();
   }
+  function showFeature(index){
+    const detail=deepDetails[currentId];if(!detail)return;
+    activeFeature=Math.min(detail.hotspots.length-1,Math.max(0,index));
+    $('#feature-title').textContent=detail.hotspots[activeFeature].title;
+    $('#feature-text').textContent=detail.hotspots[activeFeature].text;
+    document.querySelectorAll('[data-feature]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.feature)===activeFeature)));
+  }
+  function renderInspector(){
+    const detail=deepDetails[currentId];$('#flight-inspect').hidden=!detail;
+    if(!detail){setInspect(false);return;}
+    $('#inspector-title').textContent=currentIndex===0?'โลกของเรา':currentId==='centauri'?'Proxima Centauri':landmarks[currentIndex-1].thaiName;
+    $('#feature-tabs').innerHTML=detail.hotspots.map((part,index)=>`<button type="button" data-feature="${index}" aria-label="ดู ${escapeHtml(part.title)}" aria-pressed="false">${String(index+1).padStart(2,'0')}</button>`).join('');
+    $('#scene-hotspots').innerHTML=detail.hotspots.map((part,index)=>`<button type="button" class="scene-hotspot" data-feature="${index}" aria-label="ชี้ ${escapeHtml(part.title)}" aria-pressed="false"><span>${index+1}</span><em>${escapeHtml(part.title)}</em></button>`).join('');
+    featureButtons=Array.from($('#scene-hotspots').children);
+    $('#effect-model-note').textContent=detail.modelNote;
+    $('#inspector-data').innerHTML=`<div class="inspect-metrics">${detail.metrics.map(metric=>`<div><span>${escapeHtml(metric.label)}</span><strong>${escapeHtml(metric.value)}</strong></div>`).join('')}</div>${detail.sections.map(section=>`<section class="inspect-section"><h3>${escapeHtml(section.title)}</h3><p>${escapeHtml(section.text)}</p></section>`).join('')}<div class="inspect-sources">${detail.sources.map(source=>`<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)} ↗</a>`).join('')}</div>`;
+    showFeature(0);
+  }
+  function setInspect(enabled){
+    const next=enabled&&Boolean(deepDetails[currentId]);
+    if(next&&!inspecting){inspectPreviousZoom=zoom;zoom=Math.min(3.6,zoom*1.15);}
+    else if(!next&&inspecting&&inspectPreviousZoom!==null){zoom=inspectPreviousZoom;inspectPreviousZoom=null;}
+    inspecting=next;
+    $('#effect-inspector').hidden=!inspecting;$('#scene-hotspots').hidden=!inspecting;
+    $('#flight-inspect').setAttribute('aria-expanded',String(inspecting));
+    $('#journey').classList.toggle('is-inspecting',inspecting);
+    $('.flight-caption').inert=inspecting;
+    $('.flight-caption').setAttribute('aria-hidden',String(inspecting));
+  }
+  $('#flight-inspect').addEventListener('click',()=>{setInspect(!inspecting);if(inspecting)$('#close-inspector').focus({preventScroll:true});});
+  $('#close-inspector').addEventListener('click',()=>{setInspect(false);$('#flight-inspect').focus({preventScroll:true});});
+  document.addEventListener('click',event=>{const feature=event.target.closest('[data-feature]');if(feature)showFeature(Number(feature.dataset.feature));});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&inspecting){setInspect(false);$('#flight-inspect').focus({preventScroll:true});}});
+  $('#effect-speed').addEventListener('change',event=>{effectRate=Number(event.target.value);});
+  function updateAudioUi(){
+    const status=audio.getStatus(),button=$('#flight-sound');
+    button.setAttribute('aria-pressed',String(status.enabled));button.setAttribute('aria-label',status.enabled?'ปิดเสียงประกอบ':'เปิดเสียงประกอบ');button.dataset.state=status.state;
+    $('#sound-mixer').hidden=!status.enabled;$('#journey').classList.toggle('sound-enabled',status.enabled);
+    const meter=$('#sound-meter');meter.style.setProperty('--level',String(Math.min(1,status.level*85)));meter.dataset.level=status.level.toFixed(6);
+  }
+  function showSoundMixer(duration=6000){
+    clearTimeout(soundMixerTimer);
+    if(!audio.getStatus().enabled)return;
+    $('#journey').classList.add('audio-adjusting');
+    soundMixerTimer=setTimeout(()=>{if(!$('#sound-mixer').contains(document.activeElement))$('#journey').classList.remove('audio-adjusting');},duration);
+  }
+  $('#flight-sound').addEventListener('pointerenter',()=>showSoundMixer());
+  $('#sound-mixer').addEventListener('pointerenter',()=>showSoundMixer());
+  $('#sound-mixer').addEventListener('focusin',()=>showSoundMixer());
+  $('#sound-mixer').addEventListener('focusout',()=>showSoundMixer(1200));
+  $('#flight-sound').addEventListener('click',async event=>{
+    const button=event.currentTarget;button.disabled=true;
+    const wasEnabled=audio.getStatus().enabled;
+    try{await audio.toggle();updateAudioUi();if(audio.getStatus().enabled)showSoundMixer();else $('#journey').classList.remove('audio-adjusting');if(!wasEnabled&&!audio.getStatus().enabled)$('#flight-state').textContent='เปิดเสียงไม่สำเร็จ ลองกดอีกครั้งหรือเปิดในเบราว์เซอร์ที่รองรับเสียง';}
+    finally{button.disabled=false;}
+  });
+  $('#sound-volume').addEventListener('input',event=>{const value=Number(event.target.value);audio.setVolume(value/100);$('#sound-volume-value').textContent=`${value}%`;});
+  document.addEventListener('visibilitychange',async()=>{if(document.hidden)await audio.suspend();else await audio.resume();updateAudioUi();});
+  window.addEventListener('pagehide',()=>audio.dispose(),{once:true});
+  updateAudioUi();
   function go(id) {
     if (id===currentId || !ids.includes(id)) return;
+    setInspect(false);
     if(retired){scene.remove(retired.group);retired.dispose();retired=null;}
     retired=world;
     world=createWorld(id);
@@ -116,6 +185,7 @@ function startJourney() {
     $('#journey').classList.add('is-transiting');
     $('#flight-state').textContent=`กำลังเคลื่อนเข้าสู่ ${id==='earth'?'โลก':landmarks[currentIndex-1].thaiName}`;
     tourElapsed=0;
+    audio.setScene(id);audio.transition();
     updateCaption();
   }
   function navigate(id) {
@@ -189,13 +259,15 @@ function startJourney() {
   });
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();$('#flight-state').textContent='ฉากหยุดชั่วคราว กดโหลดหน้าใหม่เพื่อกลับมาสำรวจ';});
   updateCaption();
+  const initialScene=new URLSearchParams(location.search).get('scene');
+  if(initialScene&&ids.includes(initialScene)&&initialScene!=='earth')navigate(initialScene);
   function frame(timestamp) {
     requestAnimationFrame(frame);
     const dt=Math.min(.05,Math.max(0,(timestamp-lastTime)/1000));lastTime=timestamp;
     if(document.hidden)return;
     const modalOpen=Boolean(document.querySelector('dialog[open]'));
     const running=!paused&&!modalOpen;
-    if(running)animationTime+=dt;
+    if(running){animationTime+=dt;effectTime+=dt*effectRate;}
     const damping=1-Math.exp(-dt*5);
     smoothYaw=THREE.MathUtils.lerp(smoothYaw,yaw,damping);
     smoothPitch=THREE.MathUtils.lerp(smoothPitch,pitch,damping);
@@ -213,11 +285,22 @@ function startJourney() {
       if(t===1){transition=null;$('#journey').classList.remove('is-transiting');$('#flight-state').textContent=`กำลังสำรวจ ${currentId==='earth'?'โลก':landmarks[currentIndex-1].thaiName}`;if(retired){scene.remove(retired.group);retired.dispose();retired=null;}}
     }else{camera.position.copy(eye);focus.copy(center);}
     camera.lookAt(focus);
-    world.update(running?dt:0,animationTime,camera.position);
-    if(retired)retired.update(running?dt:0,animationTime,camera.position);
+    world.update(running?dt*effectRate:0,effectTime,camera.position);
+    if(retired)retired.update(running?dt*effectRate:0,effectTime,camera.position);
     sun.position.copy(center).add(sunlightOffset);sun.target.position.copy(center);
     field.update(dt,animationTime,camera.position,pixelRatio);
-    if(touring&&running&&!transition){tourElapsed+=dt;if(tourElapsed>13){if(currentIndex<12)navigate(ids[currentIndex+1]);else stopTour();}}
+    if(touring&&running&&!transition&&!inspecting){tourElapsed+=dt;if(tourElapsed>13){if(currentIndex<12)navigate(ids[currentIndex+1]);else stopTour();}}
+    if(inspecting){
+      world.features.forEach((feature,index)=>{
+        featureProjection.copy(feature.point);world.group.localToWorld(featureProjection);featureProjection.project(camera);
+        const x=(featureProjection.x*.5+.5)*width,y=(-featureProjection.y*.5+.5)*height;
+        const button=featureButtons[index];if(!button)return;
+        button.hidden=featureProjection.z>1||featureProjection.z< -1||x<40||x>width-40||y<120||y>height*.8;
+        button.classList.toggle('is-left-label',x>width*.63);
+        button.style.left=`${x}px`;button.style.top=`${y}px`;
+      });
+    }
+    if(timestamp-lastSoundUpdate>80){updateAudioUi();lastSoundUpdate=timestamp;}
     renderer.render(scene,camera);
   }
   requestAnimationFrame(frame);
