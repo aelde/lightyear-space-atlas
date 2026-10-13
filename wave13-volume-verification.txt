@@ -1,0 +1,31 @@
+Wave 13 — spatial volumes and full orbit exploration
+
+User request: replace photo sheets and visibly triangulated objects with three-dimensional objects in every scene, with dense realistic details and full orbit viewing.
+Accepted preference: structures appropriate to object type, including naturally flattened galaxies; desktop quality priority with mobile reductions.
+
+Implementation
+- Shared closed-boundary XYZ density renderer integrates light through real depth.
+- Orion/Pleiades gas, molecular dust and spatial stars replace photo sheets.
+- M31 stellar disk, thick component, bulge and dust; LMC asymmetric stellar bar and nurseries replace flattened photo surfaces.
+- Vega has a finite dust volume and spatial grains.
+- Black hole gas disk has nonzero height. Stellar prominence arcs have closed tube cross-sections.
+- Existing Earth, stellar spheres, icy bodies, navigation, type size, panels and audio controls reused.
+- Photo references supply colors and morphology within simulated density fields; credits and bilingual model descriptions updated.
+- Mobile volumes use half the sampling count and fewer spatial stars. Nebula raster budget bounds per-frame workload without reducing desktop volume layers.
+
+Verified locally in the Codex in-app browser
+- All 13 scenes: front, side, back, near-polar top/bottom, close zoom, and approximately 360-degree horizontal orbit.
+- No visible photo-sheet edges or triangulated photo surfaces in the captured views.
+- Runtime primary-object Plane/Ring geometry count zero for all 13. This diagnostic is a supporting check, not a complete geometry proof.
+- 13 bilingual detail records / 39 feature entries preserved; English/Thai switching keeps active feature and effect speed.
+- Earth field recording layers load; designed Orion ambience enabled; scene audio profile changes correctly.
+- Radius + increments 1 to 2; orbit zoom controls work and reset.
+- 390 x 844 viewport: Orion/Pleiades 52 samples; galaxy/accretion 56; secondary lens effect 44. No horizontal overflow.
+- No browser errors observed. Changed module syntax and git diff whitespace checks pass.
+- CSS/layout unchanged. Existing text sizing and controls compared in real screenshots.
+
+Limits
+- Unobserved depths/back sides are models, not measured reconstructions. Cluster star positions are illustrative, not a precise catalogue.
+- Black-hole lens-like glow is artistic; this is not full general-relativistic ray tracing.
+- Distant interstellar photographic panorama remains on a spherical sky boundary with spatial nearby stars; it is not a reconstruction of every distant star.
+- Performance observations are frame intervals on this computer. Real mobile hardware and every GPU were not tested. Heavy scenes compile on first entry and may pause briefly.

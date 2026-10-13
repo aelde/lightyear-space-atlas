@@ -1,9 +1,9 @@
 import * as THREE from './vendor/three.module.js';
-import { addStellarWeather, addDustDisk } from './flight-effects.js?v=9.5';
+import { addStellarWeather, addDustDisk } from './flight-effects.js?v=13.1';
 import { enhancedStarMaterial, addDetailedCorona } from './stellar-surfaces.js?v=9.5';
-import { addPhotographicNebula } from './nebula-renderer.js?v=9.5';
-import { addDetailedGalaxy } from './galaxy-renderer.js?v=9.5';
-import { addDetailedIce, addInterstellarContext, addAccretionDetail } from './deep-space-details.js?v=9.5';
+import { addPhotographicNebula } from './nebula-renderer.js?v=13.1';
+import { addDetailedGalaxy } from './galaxy-renderer.js?v=13.1';
+import { addDetailedIce, addInterstellarContext, addAccretionDetail } from './deep-space-details.js?v=13.1';
 
 // Distances, scales and animation speeds are compressed for exploration.
 // Spheres, atmospheric shells and depth-bearing particles are artist concepts.
@@ -350,7 +350,7 @@ export function createWorld(id) {
     } else {
       radius = 13.2; cameraDistance = 26;
       star(group, 3.2, '#bedfff', false, 24);
-      addDustDisk(group,own,timeUniform);
+      addDustDisk(group,own,timeUniform,cameraUpdates);
     }
   }
 
@@ -375,28 +375,6 @@ export function createWorld(id) {
     const disk = new THREE.Group();
     disk.rotation.x = 1.10; disk.rotation.z = -0.15;
     group.add(disk);
-    const diskMaterial = own(new THREE.ShaderMaterial({
-      vertexShader: `varying vec3 vLocal; void main(){ vLocal=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-      fragmentShader: `
-        uniform float uTime; varying vec3 vLocal; ${noiseGLSL}
-        void main(){
-          float r=length(vLocal.xy); float a=atan(vLocal.y,vLocal.x);
-          float heat=1.0-smoothstep(2.5,7.8,r);
-          float rings=0.73+0.27*sin(r*15.0+fbm(vec3(vLocal.xy*3.0,uTime*0.1))*8.0);
-          float flowAngle=a-uTime*.85/pow(r/2.5,1.5);
-          float spiral=0.45+0.55*fbm(vec3(cos(flowAngle)*11.0,sin(flowAngle)*11.0,r*1.8));
-          float edge=smoothstep(2.35,2.68,r)*(1.0-smoothstep(5.3,7.8,r));
-          vec3 col=mix(vec3(0.64,0.13,0.018),vec3(1.4,0.97,0.46),pow(heat,3.0));
-          gl_FragColor=vec4(col,edge*rings*spiral*(0.35+heat*0.58));
-          #include <tonemapping_fragment>
-  #include <colorspace_fragment>
-        }`,
-      uniforms: { uTime: timeUniform() }, side: THREE.DoubleSide,
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    }));
-    const accretion = new THREE.Mesh(own(new THREE.RingGeometry(2.38, 7.8, 160, 6)), diskMaterial);
-    accretion.name = 'accretion-disk';
-    disk.add(accretion);
     const torusMaterial = own(new THREE.MeshBasicMaterial({ color: '#ffd290', transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false }));
     const innerEdge = new THREE.Mesh(own(new THREE.TorusGeometry(2.56, 0.055, 12, 128)), torusMaterial);
     disk.add(innerEdge);
@@ -417,7 +395,7 @@ export function createWorld(id) {
     const gasFlow=new THREE.Points(flowGeometry,flowMaterial);gasFlow.frustumCulled=false;disk.add(gasFlow);
     shell(group, 2.26, '#ffb86c', 0.52, 7);
     shell(group, 2.39, '#ff9142', 0.075, 6);
-    const photonRing=new THREE.Mesh(own(new THREE.TorusGeometry(2.22,.024,10,128)),own(new THREE.MeshBasicMaterial({color:'#ffd5a0',transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending})));
+    const photonRing=new THREE.Mesh(own(new THREE.TorusGeometry(2.22,.024,10,128)),own(new THREE.MeshBasicMaterial({color:'#ffd5a0',transparent:true,opacity:.40,depthWrite:false,blending:THREE.AdditiveBlending})));
     group.add(photonRing);
     cameraUpdates.push(cameraPosition=>{group.updateWorldMatrix(true,false);photonRing.lookAt(cameraPosition);});
     addAccretionDetail(group,disk,{own,timeUniform,cameraUpdates});

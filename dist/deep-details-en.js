@@ -18,7 +18,7 @@ export const deepDetailsEn = {
       { title: 'Day–night boundary', text: 'The gradual transition from light to shadow comes from facing toward or away from the Sun. Earth’s rotation carries this boundary across the surface.' },
       { title: 'Oceans and continents', text: 'The surface uses imagery based on NASA satellite data. Clouds passing overhead do not change the positions of the continents.' }
     ],
-    modelNote: 'The surface and clouds use archival satellite-based imagery. Cloud motion and rotation are accelerated so their movement can be observed.',
+    modelNote: 'The surface and clouds reference archival NASA satellite composites, mapped onto a globe and a separate atmospheric layer. Cloud motion and rotation are accelerated for exploration; this is not live weather.',
     sources: [
       { title: 'NASA · Facts About Earth', url: 'https://science.nasa.gov/earth/facts/' },
       { title: 'NASA · Clouds and Radiation', url: 'https://science.nasa.gov/earth/earth-observatory/clouds-and-radiation/' },
@@ -41,7 +41,7 @@ export const deepDetailsEn = {
       { title: 'Plasma loops', text: 'The arcs illustrate the connection between plasma and magnetic fields. Detailed loops on Proxima have not been imaged like close-up features on the Sun.' },
       { title: 'Flare site', text: 'Brief brightening illustrates stellar flares supported by measurements of Proxima’s light. It does not indicate that a real flare occurs at this location.' }
     ],
-    modelNote: 'Only Proxima is shown. The plasma loops are adapted from solar physics, and their timing does not reproduce an observed flare sequence.',
+    modelNote: 'Only Proxima is shown as a spherical star. Plasma loops draw on solar physics; surface detail, depth and flare timing are illustrative, not close-up imagery or events measured directly on Proxima.',
     sources: [
       { title: 'NASA · Proxima’s Large and Frequent Flares', url: 'https://science.nasa.gov/universe/exoplanets/neighboring-stars-bad-behavior-large-and-frequent-flares/' },
       { title: 'NASA · Sun Facts: Plasma and Magnetic Features', url: 'https://science.nasa.gov/sun/facts/' }
@@ -63,7 +63,7 @@ export const deepDetailsEn = {
       { title: 'Magnetic region', text: 'Plasma loops help explain the connection between hot gas and magnetic fields. They are a conceptual illustration of activity on a red dwarf.' },
       { title: 'Flare light', text: 'Evidence for this star’s flares comes from UV and X-ray light. The flashes in this scene make events invisible to the eye observable.' }
     ],
-    modelNote: 'Flares are supported by observations, but the loop shapes, colors, frequency and locations in this scene are illustrative.',
+    modelNote: 'Observed flares support the underlying activity. A spherical star and plasma loops illustrate its physics; surface detail, depth, colors, locations and flare timing are designed, not directly photographed features.',
     sources: [
       { title: 'NASA · Flares from the Old Red Dwarf Barnard’s Star', url: 'https://www.nasa.gov/image-article/assessing-habitability-of-planets-around-old-red-dwarfs/' },
       { title: 'NASA · Magnetic Features of the Sun', url: 'https://science.nasa.gov/sun/facts/' }
@@ -85,7 +85,7 @@ export const deepDetailsEn = {
       { title: 'Atmospheric rotation', text: 'As the object rotates, different parts of its atmosphere face the observer in turn, changing the measured brightness over several hours.' },
       { title: 'Brown dwarf pair', text: 'Luhman 16 has members A and B. The weather study cited here focuses specifically on member B.' }
     ],
-    modelNote: 'Cloud layers and rotation are supported by observations. The patterns and colors are designed to illustrate an atmosphere, rather than a directly photographed surface.',
+    modelNote: 'Rotation and patchy clouds are supported by observations, with the cited weather study focused on Luhman 16B. Both objects are spherical, but cloud patterns, colors, depth and separation are designed for exploration, not close-up surface images.',
     sources: [
       { title: 'ESO · First Weather Map of a Brown Dwarf', url: 'https://www.eso.org/public/news/eso1404/' },
       { title: 'ESO · Luhman 16 at 6.5 Light-Years', url: 'https://www.hq.eso.org/public/products/papermodels/papermodel_0004/' }
@@ -107,7 +107,7 @@ export const deepDetailsEn = {
       { title: 'Dust disk', text: 'The visible ring illustrates the distribution of debris. It is not a solid ring or a rope rotating as one piece.' },
       { title: 'Small dust grains', text: 'Radiation pressure affects grains of different sizes differently. The moving points illustrate particle motion within the disk.' }
     ],
-    modelNote: 'The dust disk is supported by observations. Particle brightness and speed are enhanced to make their motion around the star visible.',
+    modelNote: 'Observations establish the dust disk. The model gives it thickness and particles distributed in three dimensions; thickness, particle positions, brightness and speed are interpretations, not a measured depth map.',
     sources: [
       { title: 'NASA · Hubble and Webb Probe Vega’s Smooth Disk', url: 'https://science.nasa.gov/missions/hubble/nasas-hubble-webb-probe-surprisingly-smooth-disk-around-vega/' },
       { title: 'NASA · DART Images Vega at 25 Light-Years', url: 'https://www.nasa.gov/missions/dart/nasas-dart-captures-one-of-night-skys-brightest-stars/' }
@@ -129,7 +129,7 @@ export const deepDetailsEn = {
       { title: 'Bright gas edge', text: 'Gas receives energy from stars and emits light. Bright edges help reveal the relationship between stars and their surrounding clouds.' },
       { title: 'Opaque dust', text: 'Dark regions may be dust blocking light from behind. Darkness therefore does not mean an absence of matter.' }
     ],
-    modelNote: 'Actual gas and dust image: ESO/G. Beccari · CC BY 4.0. This is a composite of multiple filters, not the colors seen directly by the eye. Depth, gas layers and flow timing are added for exploration, rather than measured three-dimensional data.',
+    modelNote: 'Color and filament reference: ESO/G. Beccari · CC BY 4.0, an actual multi-filter image. Gas and dust volumes, depth and the unseen back are modeled for exploration, not three-dimensional measurements recovered from the photograph. Flow is accelerated to make it visible.',
     sources: [
       { title: 'NASA · A 3D Journey Through the Orion Nebula', url: 'https://science.nasa.gov/missions/hubble/nasa-space-telescopes-provide-a-3d-journey-through-the-orion-nebula/' },
       { title: 'NASA · Hubble’s Nebulae', url: 'https://science.nasa.gov/mission/hubble/science/universe-uncovered/hubble-nebulae/' },
@@ -154,7 +154,7 @@ export const deepDetailsEn = {
       { title: 'Circling hot gas', text: 'Flow around the center illustrates orbiting matter and accretion. The light comes from matter outside the black hole, not from within it.' },
       { title: 'Inner light ring', text: 'This illustrates the bending of light paths near a black hole. The ring is explanatory and does not result from a complete calculation of photon paths.' }
     ],
-    modelNote: 'The disk and light ring are conceptual illustrations of gas and gravity, not an EHT image or a general-relativistic simulation.',
+    modelNote: 'Gas with finite thickness, the light ring and the dark region conceptually illustrate matter and gravity. The unseen back and motion are designed; this is not an EHT image or a general-relativistic calculation of light paths.',
     sources: [
       { title: 'NASA JPL · Hot Gas Around Sagittarius A*', url: 'https://www.jpl.nasa.gov/news/milky-way-black-hole-snacks-on-hot-gas/' },
       { title: 'NASA · Black Hole Anatomy', url: 'https://science.nasa.gov/universe/black-holes/anatomy/' },
@@ -177,7 +177,7 @@ export const deepDetailsEn = {
       { title: 'The distant Sun', text: 'A distant point of light helps locate the Solar System. At this distance, the Sun should not appear as a fireball filling the sky.' },
       { title: 'Space between objects', text: 'Dark space is an essential part of the scene: objects are spread through an enormous volume, rather than lined up in a wall.' }
     ],
-    modelNote: 'The Oort Cloud and its boundaries remain hypothetical. The icy objects are enlarged and positioned for exploration.',
+    modelNote: 'The Oort Cloud and its boundaries remain hypothetical. Icy bodies are enlarged three-dimensional objects for inspection; surface shapes, positions and rotation are designed, not measured from photographs of actual Oort Cloud objects.',
     sources: [
       { title: 'NASA · Oort Cloud Facts', url: 'https://science.nasa.gov/solar-system/oort-cloud/facts/' },
       { title: 'NASA · Solar System Facts', url: 'https://science.nasa.gov/solar-system/solar-system-facts/' }
@@ -199,7 +199,7 @@ export const deepDetailsEn = {
       { title: 'Background stars', text: 'Star points help establish direction and viewpoint. Their depth is arranged for this scene, rather than taken from a measured star map.' },
       { title: 'Thin gas and dust', text: 'Dark regions are not necessarily empty, but particles should not appear as a dense snowstorm throughout the journey.' }
     ],
-    modelNote: 'The sky is based on an actual image: ESO/S. Brunier · CC BY 4.0. A panorama photographed from Earth represents the distant sky. Star points and nearby viewing angles are arranged for exploration; this is not an observation made 2–3 light-years away.',
+    modelNote: 'Sky reference photographed from Earth: ESO/S. Brunier · CC BY 4.0. The panorama represents the distant sky; star-point depths and positions are arranged for exploration, not a three-dimensional star catalog or an observation made 2–3 light-years away.',
     sources: [
       { title: 'NASA · 10 Things: Going Interstellar', url: 'https://science.nasa.gov/solar-system/10-things-going-interstellar/' },
       { title: 'NASA · The Interstellar Medium and Nebulae', url: 'https://science.nasa.gov/mission/hubble/science/universe-uncovered/hubble-nebulae/' },
@@ -223,7 +223,7 @@ export const deepDetailsEn = {
       { title: 'Sirius B', text: 'The small object is a white dwarf, not a planet. It remains hot and luminous despite being the remnant core of a star that exhausted its fuel.' },
       { title: 'Space between the stars', text: 'The two stars are gravitationally bound and orbit one another. Their clear separation here helps compare object types; it is not their true relative scale.' }
     ],
-    modelNote: 'Stars A and B are shown as different object types. Their sizes, brightness, separation and motion timing are adjusted to make the pair clear.',
+    modelNote: 'Stars A and B are modeled as different spherical object types. Surface detail, sizes, brightness, separation and motion timing are adjusted for comparison, not close-up imagery or the system’s true scale.',
     sources: [
       { title: 'NASA · Measuring a White Dwarf Star', url: 'https://science.nasa.gov/missions/hubble/measuring-a-white-dwarf-star/' },
       { title: 'NASA · Sirius and Its Tiny Companion', url: 'https://science.nasa.gov/asset/hubble/the-dog-star-sirius-and-its-tiny-companion/' }
@@ -245,7 +245,7 @@ export const deepDetailsEn = {
       { title: 'Reflection dust sheets', text: 'This marks thin dust filaments and blue regions produced by scattered starlight. Dust is not a burning flame.' },
       { title: 'Dark gaps and dust filaments', text: 'Different densities make some dust prominent and other regions dark. Sharp filaments are dust structures, while crosses in star images may be effects of the telescope.' }
     ],
-    modelNote: 'Actual dust and star image: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage), R. Cool (University of Arizona) and WIYN · CC BY 4.0. The image is resized for the web. Depth, flow and inspection-point locations are interpretations, not a measured three-dimensional map.',
+    modelNote: 'Color and dust-filament reference: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage), R. Cool (University of Arizona) and WIYN · CC BY 4.0. Dust volume, stellar depths and the unseen back are inferred for exploration, not a measured three-dimensional map. Flow is accelerated to make it visible.',
     sources: [
       { title: 'NOIRLab · M45 Optical Image and Filters', url: 'https://www.astropix.org/image/noirlab/noao-m45' },
       { title: 'NASA · Messier 45 and Reflection Dust', url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-45/' },
@@ -269,7 +269,7 @@ export const deepDetailsEn = {
       { title: 'Star-forming gas knot', text: 'Pink represents gas associated with young stars. It does not place this simulated knot at the Tarantula Nebula’s actual location.' },
       { title: 'Irregular galaxy edge', text: 'Stars and gas are distributed in patches and gradually fade outward. This asymmetry helps distinguish the object from a large spiral galaxy.' }
     ],
-    modelNote: 'Based on an actual infrared image: ESO/VMC Survey · CC BY 4.0. Colors represent the Y/J/Ks filters. The image is compressed for the web and projected onto simulated layers. Depth, star locations and added gas knots are interpretations, not three-dimensional measurements.',
+    modelNote: 'Color and stellar-morphology reference: ESO/VMC Survey · CC BY 4.0, an actual infrared image with colors assigned to Y/J/Ks filters. The stellar-bar and gas-knot volumes, depth and unseen back are modeled, not measured from the photograph. Star positions and motion are arranged for exploration.',
     sources: [
       { title: 'ESO · The LMC Stellar Bar and Nebulae', url: 'https://www.eso.org/public/news/eso9931/' },
       { title: 'NASA JPL · The Tarantula in the Large Magellanic Cloud', url: 'https://www.jpl.nasa.gov/news/a-cosmic-tarantula-caught-by-nasas-webb/' },
@@ -293,7 +293,7 @@ export const deepDetailsEn = {
       { title: 'Spiral arms and blue stellar groups', text: 'Patterns in the disk reveal the structure of stars, gas and star-forming regions. They are not solid arms rotating as a single object.' },
       { title: 'Dark dust lanes', text: 'Dark bands mark dust that absorbs and blocks light. Some dark-looking areas still contain matter and have stars behind them.' }
     ],
-    modelNote: 'Based on an actual image: Local Group Survey Team and T.A. Rector (University of Alaska Anchorage) · CC BY 4.0. A multi-filter composite is resized and projected onto a simulated disk. Depth, star points and views beyond the image are interpretations, not a measured three-dimensional model.',
+    modelNote: 'Color and structure reference: Local Group Survey Team and T.A. Rector (University of Alaska Anchorage) · CC BY 4.0, an actual multi-filter image. A disk with thickness, the bulge, depth and unseen back are inferred, not three-dimensional measurements. Star positions and motion are arranged for exploration.',
     sources: [
       { title: 'NASA · Hubble’s Andromeda History', url: 'https://science.nasa.gov/missions/hubble/nasas-hubble-traces-hidden-history-of-andromeda-galaxy/' },
       { title: 'NASA · M31 PHAT Mosaic: Stars and Dust', url: 'https://science.nasa.gov/asset/hubble/hubble-m31-phat-mosaic/' },

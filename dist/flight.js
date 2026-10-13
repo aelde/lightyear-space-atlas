@@ -1,12 +1,12 @@
 import * as THREE from './vendor/three.module.js';
-import { getLandmarks, getDeepDetails, getSoundProfiles, getSoundScienceSource } from './localized-data.js?v=11';
+import { getLandmarks, getDeepDetails, getSoundProfiles, getSoundScienceSource } from './localized-data.js?v=13.1';
 import { t, getLanguage } from './i18n.js?v=11';
 let landmarks = getLandmarks();
 let deepDetails = getDeepDetails();
 let soundProfiles = getSoundProfiles();
 let soundScienceSource = getSoundScienceSource();
-import { selectExhibit, openDetail, escapeHtml } from './app.js?v=11';
-import { createWorld } from './flight-worlds.js?v=9.5';
+import { selectExhibit, openDetail, escapeHtml } from './app.js?v=13.1';
+import { createWorld } from './flight-worlds.js?v=13.1';
 import { createSpaceField } from './flight-field.js?v=4';
 import { createSpaceAudio } from './flight-audio.js?v=7';
 
@@ -48,7 +48,7 @@ function startJourney() {
   let currentId='earth', currentIndex=0, retired=null, transition=null;
   let yaw=0, pitch=.05, zoom=1, smoothYaw=0, smoothPitch=.05, smoothZoom=1;
   let paused=reducedMotion, touring=false, tourElapsed=0, animationTime=0, lastTime=0;
-  let effectTime=0,effectRate=1,lastSoundUpdate=0,inspecting=false,activeFeature=0;
+  let effectTime=0,effectRate=1,lastSoundUpdate=0,lastMetricsUpdate=0,frameAccumulator=0,frameSamples=0,inspecting=false,activeFeature=0;
   let inspectPreviousZoom=null,soundMixerTimer=null,lastSoundProfile='';
   let pointer=null;
   let width=1,height=1,pixelRatio=1;
@@ -63,7 +63,7 @@ function startJourney() {
   let featureButtons=[];
   const directions = () => t(['จุดเริ่มต้นของการสำรวจ', 'ขอบเขตที่ยังไม่แน่นอน', 'บริเวณระหว่างดวงดาว', 'ฉากนี้แสดง Proxima Centauri', 'ดาวแคระแดง', 'ดาวแคระน้ำตาลคู่', 'ระบบดาวคู่', 'ดาวฤกษ์สีขาวอมฟ้า', 'กระจุกดาว', 'บริเวณกำเนิดดาว', 'ภาพแนวคิดบริเวณหลุมดำ', 'กาแล็กซีบริวารรูปร่างไม่แน่นอน', 'กาแล็กซีเพื่อนบ้านขนาดใหญ่'], ['The starting point of our journey', 'An uncertain outer boundary', 'Between the stars', 'This scene shows Proxima Centauri', 'Red dwarf', 'Brown dwarf binary', 'Binary star system', 'Blue-white star', 'Star cluster', 'Star-forming region', 'Artist’s black hole concept', 'Irregular satellite galaxy', 'A major neighbouring galaxy']);
   const sceneName = () => currentId === 'earth' ? t('โลก', 'Earth') : currentId === 'centauri' ? 'Proxima Centauri' : t(landmarks[currentIndex-1].thaiName, landmarks[currentIndex-1].name);
-  const imageCredits = () => ({orion:t('ภาพจริง ESO/G. Beccari', 'Observation: ESO/G. Beccari'),pleiades:t('ภาพจริง NOIRLab/NSF/AURA', 'Observation: NOIRLab/NSF/AURA'),interstellar:t('ภาพจริง ESO/S. Brunier', 'Observation: ESO/S. Brunier'),andromeda:t('ภาพจริง Local Group Survey / T.A. Rector', 'Observation: Local Group Survey / T.A. Rector'),lmc:t('ภาพอินฟราเรด ESO/VMC Survey', 'Infrared: ESO/VMC Survey')});
+  const imageCredits = () => ({orion:t('ภาพอ้างอิง ESO/G. Beccari', 'Reference: ESO/G. Beccari'),pleiades:t('ภาพอ้างอิง NOIRLab/NSF/AURA', 'Reference: NOIRLab/NSF/AURA'),interstellar:t('ภาพจริง ESO/S. Brunier', 'Observation: ESO/S. Brunier'),andromeda:t('ภาพอ้างอิง Local Group Survey / T.A. Rector', 'Reference: Local Group Survey / T.A. Rector'),lmc:t('อ้างอิงอินฟราเรด ESO/VMC Survey', 'Infrared reference: ESO/VMC Survey')});
   let stateKey = 'floating';
   function updateState() {
     const states = {floating:t('ลอยอยู่เหนือโลก', 'Floating above Earth'), transit:t(`กำลังเคลื่อนเข้าสู่ ${sceneName()}`, `Approaching ${sceneName()}`), exploring:t(`กำลังสำรวจ ${sceneName()}`, `Exploring ${sceneName()}`), audioError:t('เปิดเสียงไม่สำเร็จ ลองกดอีกครั้งหรือเปิดในเบราว์เซอร์ที่รองรับเสียง', 'Could not enable sound. Try again or use a browser with audio support.'), fullscreenError:t('เบราว์เซอร์นี้ไม่รองรับโหมดเต็มจอ', 'This browser does not support fullscreen.'), contextLost:t('ฉากหยุดชั่วคราว กดโหลดหน้าใหม่เพื่อกลับมาสำรวจ', 'The scene is temporarily unavailable. Reload to resume exploring.')};
@@ -77,7 +77,9 @@ function startJourney() {
   }
   function resize() {
     width=window.innerWidth;height=window.innerHeight;
-    pixelRatio=Math.min(window.devicePixelRatio || 1, width<600 ? 1.35 : 1.65);
+    const nebula=currentId==='orion'||currentId==='pleiades';
+    const pixelBudget=nebula?1350000:3200000;
+    pixelRatio=Math.min(window.devicePixelRatio || 1, width<600 ? 1.35 : 1.65,Math.sqrt(pixelBudget/(width*height)));
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width,height,false);
     camera.aspect=width/height;
@@ -210,6 +212,7 @@ function startJourney() {
     retired=world;
     world=createWorld(id);
     currentIndex=ids.indexOf(id);currentId=id;
+    resize();
     // Camera positions are an exhibit layout, separate from the stated Earth distances.
     center.set(Math.sin(currentIndex*1.7)*70, Math.sin(currentIndex*.7)*22, -currentIndex*225);
     world.group.position.copy(center);scene.add(world.group);
@@ -278,7 +281,7 @@ function startJourney() {
   canvas.addEventListener('pointermove',event=>{
     if(!pointer||pointer.id!==event.pointerId)return;
     const dx=event.clientX-pointer.x,dy=event.clientY-pointer.y;
-    yaw-=dx*.006;pitch=THREE.MathUtils.clamp(pitch+dy*.005,-1.15,1.15);
+    yaw-=dx*.006;pitch=THREE.MathUtils.clamp(pitch+dy*.005,-1.50,1.50);
     pointer.x=event.clientX;pointer.y=event.clientY;
   });
   const release=()=>{pointer=null;canvas.classList.remove('is-dragging');};
@@ -289,8 +292,8 @@ function startJourney() {
     else if(event.key==='ArrowLeft'){event.preventDefault();navigate(ids[Math.max(0,currentIndex-1)]);}
     else if(event.key==='+'||event.key==='='){event.preventDefault();changeZoom(.83);}
     else if(event.key==='-'){event.preventDefault();changeZoom(1.2);}
-    else if(event.key==='ArrowUp'){event.preventDefault();pitch=Math.min(1.15,pitch+.1);}
-    else if(event.key==='ArrowDown'){event.preventDefault();pitch=Math.max(-1.15,pitch-.1);}
+    else if(event.key==='ArrowUp'){event.preventDefault();pitch=Math.min(1.50,pitch+.1);}
+    else if(event.key==='ArrowDown'){event.preventDefault();pitch=Math.max(-1.50,pitch-.1);}
     else if(event.key===' '){event.preventDefault();paused=!paused;updatePause();}
   });
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();stateKey='contextLost';updateState();});
@@ -306,7 +309,7 @@ function startJourney() {
   if(initialScene&&ids.includes(initialScene)&&initialScene!=='earth')navigate(initialScene);
   function frame(timestamp) {
     requestAnimationFrame(frame);
-    const dt=Math.min(.05,Math.max(0,(timestamp-lastTime)/1000));lastTime=timestamp;
+    const rawDt=Math.max(0,(timestamp-lastTime)/1000);const dt=Math.min(.05,rawDt);lastTime=timestamp;
     if(document.hidden)return;
     const modalOpen=Boolean(document.querySelector('dialog[open]'));
     const running=!paused&&!modalOpen;
@@ -345,6 +348,12 @@ function startJourney() {
     }
     if(timestamp-lastSoundUpdate>80){updateAudioUi();lastSoundUpdate=timestamp;}
     renderer.render(scene,camera);
+    if(!transition&&rawDt<1){frameAccumulator+=rawDt*1000;frameSamples++;}
+    if(timestamp-lastMetricsUpdate>300){
+      canvas.dataset.scene=currentId;canvas.dataset.yaw=smoothYaw.toFixed(3);canvas.dataset.pitch=smoothPitch.toFixed(3);canvas.dataset.zoom=zoom.toFixed(3);canvas.dataset.pixelRatio=pixelRatio.toFixed(2);
+      let volumes=0,surfaces=0,volumeSteps=[];world.group.traverse(object=>{if(object.userData.renderTechnique==='volumetric-ray-integration'){volumes++;volumeSteps.push(object.userData.marchSteps);}if(object.isMesh&&(object.geometry.type==='PlaneGeometry'||object.geometry.type==='RingGeometry'))surfaces++;});
+      canvas.dataset.volumes=String(volumes);canvas.dataset.volumeSteps=volumeSteps.join(',');canvas.dataset.averageFrameMs=(frameAccumulator/Math.max(1,frameSamples)).toFixed(1);frameAccumulator=0;frameSamples=0;canvas.dataset.flatMeshes=String(surfaces);canvas.dataset.frameMs=(rawDt*1000).toFixed(1);canvas.dataset.renderCalls=String(renderer.info.render.calls);lastMetricsUpdate=timestamp;
+    }
   }
   requestAnimationFrame(frame);
 }

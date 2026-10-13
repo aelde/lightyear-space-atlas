@@ -23,11 +23,12 @@ Web copy resized to4000x2920 and recompressed asJPEG; no artistic raster edits.
 Optical B/V/I filter composite. Blue features are reflection dust, not flames.
 
 Presentation adaptations for both images:
-The site softens image boundaries, adjusts emission in the renderer, maps the
-photographs onto layered curved sheets and places photograph-colored points
-at illustrative depths. Very slow local flow adds a sense of movement.
-Depth, particle locations, sheet shapes and timing were designed for this
-experience; they are not a measured reconstruction of each nebula in3D.
+The site resamples the photographs at runtime, suppresses isolated stellar
+peaks, and uses filtered image colour/morphology as references inside continuous
+XYZ gas and dust density fields. Light is integrated through finite three-
+dimensional depth; no photograph is displayed on a flat surface. Cavities,
+local density, the unseen back, stellar locations, scale and slow flow are
+illustrative interpretations, not measured reconstructions of the nebulae.
 Attribution appears in the scene caption and full credit/license in the inspector.
 The original source images remain available at the links above underCC BY4.0.
 
@@ -46,13 +47,18 @@ M31 Local Group Survey U/B/V/I/H-alpha colour mosaic.
 https://www.astropix.org/image/noirlab/noao-m31lgs_ubvIha
 CC BY4.0, https://creativecommons.org/licenses/by/4.0/
 Official6000x1513 panorama resized to4000x1008, recompressed for web.
-Presentation: sampled onto an inclined artist disk; diffuse boundary, output
-brightness, 3D stars/bulge and depth were added. Not a measured3D map ofM31.
+Presentation: filtered colour/morphology references inside an inclined volume
+with thin/thick stellar populations, a diffuse bulge and three-dimensional dust
+extinction. Unresolved starlight is integrated independently of dust opacity.
+Scale, depth, unseen back, points and timing are artist interpretations, not a
+measured three-dimensional map of M31.
 
 LMC observation: ESO/VMC Survey
 The Large Magellanic Cloud in infrared, eso1914a.
 https://www.eso.org/public/images/eso1914a/
 CC BY4.0 under https://www.eso.org/public/outreach/copyright/
 Y/J/Ks near-infrared assigned-colour composite,3581x4000publication image.
-Recompressed for web without artistic raster edits. Presentation overlays3D
-stellar populations, gas, and illustrative depth on the observed bar/structure.
+Recompressed for web without artistic raster edits. Presentation uses filtered
+infrared colour as a reference for modeled XYZ stellar bar/populations, gas
+nurseries and dust extinction. Depth, unseen back, positions and flow are
+interpretations, not a measured three-dimensional reconstruction.

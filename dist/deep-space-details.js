@@ -1,4 +1,5 @@
 import * as THREE from './vendor/three.module.js';
+import { addVolume } from './volume-field.js?v=13.1';
 
 const noise=`float h(vec3 p){p=fract(p*.3183099+vec3(.13,.27,.41));p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
 float n(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z);}
@@ -48,34 +49,43 @@ export function addInterstellarContext(group,{own,timeUniform}){
 }
 
 export function addAccretionDetail(group,disk,{own,timeUniform,cameraUpdates}){
-  const material=own(new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
-    uniforms:{uTime:timeUniform()},
-    vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-    fragmentShader:`varying vec3 vP;uniform float uTime;${noise}
-      void main(){float r=length(vP.xy),a=atan(vP.y,vP.x);float orbital=a-uTime*.6/pow(max(.9,r/2.5),1.5);
-        float f1=f(vec3(cos(orbital)*r*4.0,sin(orbital)*r*4.0,r*8.0));
-        float streaks=pow(.5+.5*sin(r*47.0+f1*9.0+a*.6),5.0);
-        float hot=1.0-smoothstep(2.42,6.4,r);float taper=smoothstep(2.37,2.65,r)*(1.0-smoothstep(5.0,8.0,r));
-        vec3 color=mix(vec3(.61,.055,.005),vec3(2.0,1.17,.48),pow(hot,2.8));
-        float beaming=.62+.38*sin(a+.5);gl_FragColor=vec4(color,taper*(.06+streaks*.38)*(.35+hot*.65)*beaming);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`}));
-  for(const z of [-.11,.12]){const layer=new THREE.Mesh(own(new THREE.RingGeometry(2.39,7.9,192,12)),material);layer.position.z=z;layer.name='fine-differential-gas-filaments';disk.add(layer);}
-  const lensMaterial=own(new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-    uniforms:{uTime:timeUniform()},
-    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-    fragmentShader:`varying vec2 vUv;uniform float uTime;${noise}
-      void main(){vec2 p=(vUv-.5)*10.0;float r=length(p),a=atan(p.y,p.x);
-        float ring=exp(-pow((r-2.31)/.055,2.0))*.42+exp(-pow((r-2.39)/.025,2.0))*.20;
-        float farArc=exp(-pow((r-3.06)/.19,2.0))*(.25+.75*smoothstep(-.15,.7,p.y/ max(.1,r)));
-        float turbulent=f(vec3(cos(a)*8.0,sin(a)*8.0,uTime*.028));
-        farArc*=smoothstep(.29,.65,turbulent)*.22;
-        float inner=smoothstep(2.2,2.3,r);vec3 color=mix(vec3(.74,.19,.026),vec3(1.8,1.22,.65),ring*2.0);
-        gl_FragColor=vec4(color,(ring+farArc)*inner);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`}));
-  const lens=new THREE.Mesh(own(new THREE.PlaneGeometry(10,10)),lensMaterial);lens.name='illustrative-lensed-far-disk';group.add(lens);
-  cameraUpdates.push(cameraPosition=>{group.updateWorldMatrix(true,false);lens.lookAt(cameraPosition);});
+  // A flared three-dimensional gas density, including the full bright disk.
+  // No disk sheets or camera-facing plane: the ray traverses finite gas depth.
+  const gas=addVolume(disk,{
+    name:'finite-depth-hot-accretion-flow',halfSize:[8.25,8.25,1.85],
+    own,timeUniform,cameraUpdates,steps:112,extinction:1.05,emission:1.5,renderOrder:3,
+    field:`vec4 sampleVolume(vec3 p){
+      float r=length(p.xy);if(r<2.30||r>8.15)return vec4(0.0);
+      float inner=smoothstep(2.30,2.61,r),outer=1.0-smoothstep(5.5,8.15,r);
+      float a=atan(p.y,p.x),omega=.56/pow(max(.9,r/2.5),1.5);
+      float orbital=a-uTime*omega;
+      vec3 advected=vec3(cos(orbital)*r,sin(orbital)*r,p.z*2.4);
+      float broad=volumeNoise(advected*.78+vec3(2.7,8.1,4.5));
+      float strands=volumeNoise(vec3(r*4.8,cos(orbital)*2.5+1.7,sin(orbital)*2.5+p.z*8.0));
+      float filaments=.36+.64*smoothstep(.28,.78,strands);
+      float corrugation=(broad-.5)*.095;
+      float height=.235+r*.028;
+      float vertical=exp(-pow((p.z-corrugation)/height,2.0));
+      float heat=1.0-smoothstep(2.45,7.2,r);
+      float density=inner*outer*vertical*(.52+.48*broad)*filaments*(.34+heat*.96);
+      vec3 color=mix(vec3(.62,.065,.007),vec3(2.9,1.75,.72),pow(heat,2.1));
+      color*=.83+.17*sin(a+.5);
+      return vec4(color,density);
+    }`,
+  });
+  // A weak closed spherical light field gives a soft curved glow from every
+  // view. It is a visual metaphor for lensing, not gas at a measured radius or
+  // a general-relativistic tracing of photons. The opaque shadow remains separate.
+  const lens=addVolume(group,{
+    name:'curved-lensing-like-light-volume',halfSize:[2.70,2.70,2.70],
+    own,timeUniform,cameraUpdates,steps:88,extinction:1.0,emission:1.2,renderOrder:4,
+    field:`vec4 sampleVolume(vec3 p){
+      float r=length(p);if(r<2.18||r>2.62)return vec4(0.0);
+      float ring=exp(-pow((r-2.31)/.073,2.0));
+      float density=ring*.34;
+      return vec4(vec3(1.55,.91,.37),density);
+    }`,
+  });
+  group.userData.accretionInterpretation='Finite-depth gas illustration and lensing-like glow; no exact general-relativistic photon tracing';
+  return{gas,lens};
 }

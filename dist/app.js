@@ -1,4 +1,4 @@
-import { getLandmarks, getLearningNotes } from './localized-data.js?v=11';
+import { getLandmarks, getLearningNotes } from './localized-data.js?v=13.1';
 import { t, cleanCopy, shortDistance } from './i18n.js?v=11';
 let landmarks = getLandmarks();
 

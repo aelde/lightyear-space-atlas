@@ -17,7 +17,7 @@ export const deepDetails = {
       { title: 'แนวกลางวัน–กลางคืน', text: 'แนวที่แสงค่อย ๆ เปลี่ยนเป็นเงาเกิดจากการหันเข้าหรือออกจากดวงอาทิตย์ โลกหมุนจึงทำให้แนวนี้เคลื่อนผ่านพื้นผิว' },
       { title: 'มหาสมุทรและทวีป', text: 'พื้นผิวใช้ภาพประกอบจากข้อมูลดาวเทียม NASA เมฆที่ผ่านด้านบนไม่ได้เปลี่ยนตำแหน่งของทวีป' }
     ],
-    modelNote: 'ใช้พื้นผิวและเมฆจากภาพประกอบดาวเทียมเก่า การไหลของเมฆและเวลาหมุนถูกเร่งเพื่อให้สังเกตได้',
+    modelNote: 'พื้นผิวและเมฆอ้างภาพประกอบข้อมูลดาวเทียม NASA ในอดีต วางบนโลกทรงกลมและชั้นบรรยากาศแยกกัน การไหลของเมฆและเวลาหมุนเร่งเพื่อสำรวจ ไม่ใช่สภาพอากาศสด',
     sources: [
       { title: 'NASA · Facts About Earth', url: 'https://science.nasa.gov/earth/facts/' },
       { title: 'NASA · Clouds and Radiation', url: 'https://science.nasa.gov/earth/earth-observatory/clouds-and-radiation/' },
@@ -40,7 +40,7 @@ export const deepDetails = {
       { title: 'โค้งพลาสมา', text: 'เส้นโค้งใช้แสดงแนวคิดว่าพลาสมาเชื่อมโยงกับสนามแม่เหล็ก รูปร่างละเอียดของโค้งบน Proxima ยังไม่ได้เห็นแบบภาพใกล้ของดวงอาทิตย์' },
       { title: 'จุดปะทุ', text: 'การสว่างขึ้นเฉพาะช่วงสื่อ stellar flare ที่มีหลักฐานจากการวัดแสงของ Proxima ไม่ได้บอกว่าจะเกิดตรงตำแหน่งนี้จริง' }
     ],
-    modelNote: 'แสดง Proxima ดวงเดียว โค้งพลาสมาประยุกต์จากฟิสิกส์ดวงอาทิตย์ และไม่ได้จำลองจังหวะปะทุที่สังเกตจริง',
+    modelNote: 'แสดง Proxima ดวงเดียวเป็นดาวทรงกลม โค้งพลาสมาอ้างฟิสิกส์ดวงอาทิตย์ รายละเอียดผิว ความลึก และจังหวะปะทุเป็นภาพอธิบาย ไม่ใช่ภาพใกล้หรือเหตุการณ์ที่วัดตรงจาก Proxima',
     sources: [
       { title: 'NASA · Proxima’s Large and Frequent Flares', url: 'https://science.nasa.gov/universe/exoplanets/neighboring-stars-bad-behavior-large-and-frequent-flares/' },
       { title: 'NASA · Sun Facts: Plasma and Magnetic Features', url: 'https://science.nasa.gov/sun/facts/' }
@@ -62,7 +62,7 @@ export const deepDetails = {
       { title: 'เขตแม่เหล็ก', text: 'โค้งพลาสมาช่วยอธิบายการเชื่อมโยงระหว่างก๊าซร้อนกับสนามแม่เหล็ก เป็นภาพแนวคิดของกิจกรรมบนดาวแคระแดง' },
       { title: 'แสงปะทุ', text: 'หลักฐานการปะทุของดาวดวงนี้มาจากแสง UV และ X-ray การแฟลชในฉากแปลงเหตุการณ์ที่ตาไม่เห็นให้สังเกตได้' }
     ],
-    modelNote: 'การปะทุมีหลักฐานจริง แต่รูปโค้ง สี ความถี่ และตำแหน่งในฉากเป็นภาพอธิบาย',
+    modelNote: 'การปะทุมีหลักฐานจากการสังเกต ดาวทรงกลมและโค้งพลาสมาใช้สื่อฟิสิกส์ ส่วนลายผิว ความลึก สี ตำแหน่งและจังหวะปะทุออกแบบขึ้น ไม่ใช่ภาพผิวดาวที่ถ่ายจริง',
     sources: [
       { title: 'NASA · Flares from the Old Red Dwarf Barnard’s Star', url: 'https://www.nasa.gov/image-article/assessing-habitability-of-planets-around-old-red-dwarfs/' },
       { title: 'NASA · Magnetic Features of the Sun', url: 'https://science.nasa.gov/sun/facts/' }
@@ -84,7 +84,7 @@ export const deepDetails = {
       { title: 'การหมุนของบรรยากาศ', text: 'เมื่อวัตถุหมุน พื้นที่บรรยากาศแต่ละส่วนหันเข้าหาผู้สังเกตสลับกัน ทำให้ความสว่างที่วัดได้เปลี่ยนในช่วงหลายชั่วโมง' },
       { title: 'คู่ดาวแคระน้ำตาล', text: 'Luhman 16 มีสมาชิก A และ B การศึกษาสภาพอากาศที่อ้างถึงเน้นสมาชิก B โดยเฉพาะ' }
     ],
-    modelNote: 'ชี้ชั้นเมฆและการหมุนที่มีหลักฐานจริง ลายและสีเป็นการออกแบบเพื่อสื่อบรรยากาศ ไม่ใช่ภาพผิวที่ถ่ายโดยตรง',
+    modelNote: 'การหมุนและเมฆเป็นปื้นมีหลักฐาน โดยข้อมูลสภาพอากาศที่อ้างเน้น Luhman 16B ทั้งคู่เป็นวัตถุทรงกลม แต่ลายเมฆ สี ความลึกและระยะห่างในฉากออกแบบเพื่อสำรวจ ไม่ใช่ภาพผิวที่ถ่ายใกล้',
     sources: [
       { title: 'ESO · First Weather Map of a Brown Dwarf', url: 'https://www.eso.org/public/news/eso1404/' },
       { title: 'ESO · Luhman 16 at 6.5 Light-Years', url: 'https://www.hq.eso.org/public/products/papermodels/papermodel_0004/' }
@@ -106,7 +106,7 @@ export const deepDetails = {
       { title: 'จานฝุ่น', text: 'วงที่เห็นใช้สื่อการกระจายของเศษวัตถุ ไม่ใช่วงแหวนแข็งหรือเชือกที่หมุนเป็นชิ้นเดียว' },
       { title: 'ฝุ่นเม็ดเล็ก', text: 'แรงดันจากแสงส่งผลต่อฝุ่นต่างขนาดต่างกัน จุดที่ไหลในฉากช่วยสื่อการเคลื่อนของอนุภาคในจาน' }
     ],
-    modelNote: 'จานฝุ่นมีหลักฐานจริง แต่ความสว่างและความเร็วของอนุภาคขยายเพื่อให้เห็นการเคลื่อนรอบดาว',
+    modelNote: 'จานฝุ่นมีหลักฐานจริง แบบจำลองให้จานมีความหนาและอนุภาคกระจายในสามมิติ ความหนา ตำแหน่งอนุภาค ความสว่างและความเร็วเป็นการตีความ ไม่ใช่แผนที่ความลึกที่วัดได้',
     sources: [
       { title: 'NASA · Hubble and Webb Probe Vega’s Smooth Disk', url: 'https://science.nasa.gov/missions/hubble/nasas-hubble-webb-probe-surprisingly-smooth-disk-around-vega/' },
       { title: 'NASA · DART Images Vega at 25 Light-Years', url: 'https://www.nasa.gov/missions/dart/nasas-dart-captures-one-of-night-skys-brightest-stars/' }
@@ -128,7 +128,7 @@ export const deepDetails = {
       { title: 'ขอบก๊าซสว่าง', text: 'ก๊าซได้รับพลังงานจากดาวแล้วปล่อยแสง ขอบที่สว่างจึงช่วยอ่านความสัมพันธ์ระหว่างดาวกับเมฆรอบตัว' },
       { title: 'ฝุ่นทึบแสง', text: 'บริเวณมืดอาจเป็นฝุ่นที่บังแสงจากด้านหลัง ความมืดจึงไม่ได้หมายถึงไม่มีสสารอยู่' }
     ],
-    modelNote: 'ชี้ก๊าซ ฝุ่น และโพรงที่เกิดจากลมดาว สีและการไหลเป็นภาพอธิบาย ไม่ใช่การติดตามก้อนเมฆจริง',
+    modelNote: 'อ้างสีและเส้นใยจากภาพจริง: ESO/G. Beccari · CC BY 4.0 เป็นภาพรวมหลายฟิลเตอร์ ปริมาตรก๊าซ ฝุ่น ความลึกและด้านหลังสร้างเป็นแบบจำลองเพื่อสำรวจ ไม่ใช่ข้อมูลสามมิติที่วัดจากภาพ การไหลเร่งให้สังเกตได้',
     sources: [
       { title: 'NASA · A 3D Journey Through the Orion Nebula', url: 'https://science.nasa.gov/missions/hubble/nasa-space-telescopes-provide-a-3d-journey-through-the-orion-nebula/' },
       { title: 'NASA · Hubble’s Nebulae', url: 'https://science.nasa.gov/mission/hubble/science/universe-uncovered/hubble-nebulae/' },
@@ -151,7 +151,7 @@ export const deepDetails = {
       { title: 'ก๊าซร้อนที่วนรอบ', text: 'การไหลรอบบริเวณกลางสื่อการโคจรและการสะสมมวล แสงเป็นของสสารภายนอก ไม่ได้ออกจากด้านในหลุมดำ' },
       { title: 'วงแสงด้านใน', text: 'ชี้แนวคิดการบิดเส้นทางแสงใกล้หลุมดำ รูปวงในฉากใช้ช่วยอธิบายและไม่ได้คำนวณเส้นทางโฟตอนครบถ้วน' }
     ],
-    modelNote: 'จานและวงแสงเป็นภาพแนวคิดของก๊าซกับแรงโน้มถ่วง ไม่ใช่ภาพ EHT หรือการจำลองสัมพัทธภาพทั่วไป',
+    modelNote: 'ก๊าซที่มีความหนา วงแสงและบริเวณมืดเป็นแบบจำลองอธิบายสสารกับแรงโน้มถ่วง รูปร่างด้านหลังและการเคลื่อนออกแบบขึ้น ไม่ใช่ภาพ EHT หรือการคำนวณเส้นทางแสงด้วยสัมพัทธภาพทั่วไป',
     sources: [
       { title: 'NASA JPL · Hot Gas Around Sagittarius A*', url: 'https://www.jpl.nasa.gov/news/milky-way-black-hole-snacks-on-hot-gas/' },
       { title: 'NASA · Black Hole Anatomy', url: 'https://science.nasa.gov/universe/black-holes/anatomy/' },
@@ -178,7 +178,7 @@ Object.assign(deepDetails, {
       { title: 'ดวงอาทิตย์ไกล', text: 'จุดแสงไกลช่วยอ่านตำแหน่งของระบบสุริยะ เมื่ออยู่ไกลระดับนี้ไม่ควรมองเห็นดวงอาทิตย์เป็นลูกไฟเต็มท้องฟ้า' },
       { title: 'ช่องว่างระหว่างวัตถุ', text: 'พื้นที่มืดเป็นส่วนสำคัญของฉาก เพราะวัตถุถูกกระจายอยู่ในปริมาตรใหญ่มาก ไม่ได้เรียงตัวเป็นแนวกำแพง' }
     ],
-    modelNote: 'เมฆออร์ตและขอบเขตยังเป็นข้อคาดการณ์ ก้อนน้ำแข็งในฉากถูกขยายและจัดตำแหน่งเพื่อให้สำรวจได้',
+    modelNote: 'เมฆออร์ตและขอบเขตยังเป็นข้อคาดการณ์ ก้อนน้ำแข็งเป็นวัตถุสามมิติที่ขยายเพื่อสำรวจ รูปผิว ตำแหน่งและการหมุนออกแบบขึ้น ไม่ได้วัดจากภาพวัตถุจริงในเมฆออร์ต',
     sources: [
       { title: 'NASA · Oort Cloud Facts', url: 'https://science.nasa.gov/solar-system/oort-cloud/facts/' },
       { title: 'NASA · Solar System Facts', url: 'https://science.nasa.gov/solar-system/solar-system-facts/' }
@@ -200,7 +200,7 @@ Object.assign(deepDetails, {
       { title: 'ดาวฉากหลัง', text: 'จุดดาวช่วยบอกทิศและมุมมอง การจัดความลึกของดาวในฉากเป็นการออกแบบ ไม่ใช่แผนที่ดาวที่วัดตำแหน่งจริง' },
       { title: 'ก๊าซและฝุ่นเบาบาง', text: 'บริเวณมืดไม่ได้หมายถึงไม่มีสสาร แต่ไม่ควรเห็นอนุภาคหนาแน่นเหมือนพายุหิมะตลอดทาง' }
     ],
-    modelNote: 'ใช้ความลึกและการเลื่อนเพื่อสื่อการเดินทาง ตำแหน่งดาวและอนุภาคในฉากไม่ได้มาจากแค็ตตาล็อกจริง',
+    modelNote: 'ท้องฟ้าอ้างภาพจริงจากโลก: ESO/S. Brunier · CC BY 4.0 พาโนรามาใช้แทนท้องฟ้าไกล ความลึกและตำแหน่งจุดดาวจัดขึ้นเพื่อสำรวจ ไม่ใช่แผนที่ดาวสามมิติหรือภาพที่วัด ณ ระยะ 2–3 ปีแสง',
     sources: [
       { title: 'NASA · 10 Things: Going Interstellar', url: 'https://science.nasa.gov/solar-system/10-things-going-interstellar/' },
       { title: 'NASA · The Interstellar Medium and Nebulae', url: 'https://science.nasa.gov/mission/hubble/science/universe-uncovered/hubble-nebulae/' }
@@ -222,7 +222,7 @@ Object.assign(deepDetails, {
       { title: 'Sirius B', text: 'วัตถุเล็กคือดาวแคระขาว ไม่ใช่ดาวเคราะห์ มันยังร้อนและส่องแสงแม้จะเป็นเศษแกนของดาวที่หมดเชื้อเพลิงแล้ว' },
       { title: 'พื้นที่ระหว่างคู่ดาว', text: 'สองดาวผูกกันด้วยแรงโน้มถ่วงและโคจรรอบกัน การแยกให้เห็นชัดในฉากช่วยเปรียบเทียบชนิดวัตถุ ไม่ใช่สัดส่วนระยะจริง' }
     ],
-    modelNote: 'แสดงดาว A และ B ที่ต่างชนิดกัน ขนาด ความสว่าง ระยะห่าง และเวลาการเคลื่อนถูกปรับเพื่อให้ดูคู่ดาวได้ชัด',
+    modelNote: 'จำลองดาว A และ B เป็นวัตถุทรงกลมต่างชนิดกัน รายละเอียดผิว ขนาด ความสว่าง ระยะห่างและเวลาการเคลื่อนปรับเพื่อให้เปรียบเทียบได้ ไม่ใช่ภาพใกล้หรือสเกลของระบบจริง',
     sources: [
       { title: 'NASA · Measuring a White Dwarf Star', url: 'https://science.nasa.gov/missions/hubble/measuring-a-white-dwarf-star/' },
       { title: 'NASA · Sirius and Its Tiny Companion', url: 'https://science.nasa.gov/asset/hubble/the-dog-star-sirius-and-its-tiny-companion/' }
@@ -244,7 +244,7 @@ Object.assign(deepDetails, {
       { title: 'แผ่นฝุ่นสะท้อนแสง', text: 'ชี้เส้นฝุ่นบางและบริเวณสีฟ้าที่เกิดจากการกระเจิงแสงดาว ฝุ่นไม่ใช่เปลวไฟที่เผาไหม้' },
       { title: 'ช่องมืดและเส้นฝุ่น', text: 'ความหนาแน่นต่างกันทำให้ฝุ่นบางส่วนเด่นและบางส่วนมืด เส้นที่คมเป็นโครงสร้างฝุ่น ส่วนกากบาทบนภาพดาวอาจเป็นผลของกล้องโทรทรรศน์' }
     ],
-    modelNote: 'รูปฝุ่นอ้างภาพสังเกตของ M45 แต่ความลึกของดาว ตำแหน่งสามมิติ และการไหลเร็วในฉากเป็นการตีความ',
+    modelNote: 'อ้างสีและเส้นใยฝุ่นจากภาพจริง: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage), R. Cool (University of Arizona) and WIYN · CC BY 4.0 ปริมาตรฝุ่น ความลึกดาวและด้านหลังอนุมานเพื่อสำรวจ ไม่ใช่แผนที่สามมิติที่วัดได้ การไหลเร่งให้สังเกตได้',
     sources: [
       { title: 'NOIRLab · M45 Optical Image and Filters', url: 'https://www.astropix.org/image/noirlab/noao-m45' },
       { title: 'NASA · Messier 45 and Reflection Dust', url: 'https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-45/' }
@@ -266,7 +266,7 @@ Object.assign(deepDetails, {
       { title: 'ปมก๊าซกำเนิดดาว', text: 'บริเวณสีชมพูใช้สื่อก๊าซที่สัมพันธ์กับดาวอายุน้อย ไม่ได้บอกว่าปมจำลองนี้อยู่ตรงตำแหน่งทารันทูลาจริง' },
       { title: 'ขอบกาแล็กซีไม่สม่ำเสมอ', text: 'ดาวและก๊าซกระจายเป็นหย่อมและค่อย ๆ จางออก ความไม่สมมาตรช่วยแยกวัตถุนี้จากกาแล็กซีกังหันใหญ่' }
     ],
-    modelNote: 'แสดงกาแล็กซีที่ไม่สม่ำเสมอ มีแนวดาวและเขตกำเนิดดาว ตำแหน่งของดาวและปมก๊าซในฉากไม่ได้วัดจากภาพจริง',
+    modelNote: 'อ้างสีและรูปกระจายดาวจากภาพอินฟราเรดจริง: ESO/VMC Survey · CC BY 4.0 สีแทนฟิลเตอร์ Y/J/Ks ปริมาตรแถบดาว ปมก๊าซ ความลึกและด้านหลังสร้างเป็นแบบจำลอง ไม่ได้วัดจากภาพ ตำแหน่งดาวและการเคลื่อนจัดเพื่อสำรวจ',
     sources: [
       { title: 'ESO · The LMC Stellar Bar and Nebulae', url: 'https://www.eso.org/public/news/eso9931/' },
       { title: 'NASA JPL · The Tarantula in the Large Magellanic Cloud', url: 'https://www.jpl.nasa.gov/news/a-cosmic-tarantula-caught-by-nasas-webb/' }
@@ -288,7 +288,7 @@ Object.assign(deepDetails, {
       { title: 'แขนกังหันและกลุ่มดาวฟ้า', text: 'แนวในจานช่วยอ่านโครงสร้างของดาว ก๊าซ และเขตกำเนิดดาว ไม่ใช่แขนวัตถุแข็งที่หมุนเป็นชิ้นเดียว' },
       { title: 'ร่องฝุ่นมืด', text: 'แถบมืดชี้บริเวณฝุ่นที่ดูดกลืนและบังแสง บางพื้นที่ที่ดูมืดจึงยังมีสสารและดาวอยู่ด้านหลัง' }
     ],
-    modelNote: 'อ้างส่วนกลาง จานดาว และแนวฝุ่นของ M31 แต่รูปแขน ความลึก จำนวนจุดดาว และความเร็วในฉากเป็นการออกแบบ',
+    modelNote: 'อ้างสีและโครงสร้างจากภาพจริง: Local Group Survey Team and T.A. Rector (University of Alaska Anchorage) · CC BY 4.0 เป็นภาพรวมหลายฟิลเตอร์ จานดาวที่มีความหนา ส่วนโป่ง ความลึกและด้านหลังอนุมานขึ้น ไม่ใช่การวัดสามมิติ ตำแหน่งดาวและการเคลื่อนจัดเพื่อสำรวจ',
     sources: [
       { title: 'NASA · Hubble’s Andromeda History', url: 'https://science.nasa.gov/missions/hubble/nasas-hubble-traces-hidden-history-of-andromeda-galaxy/' },
       { title: 'NASA · M31 PHAT Mosaic: Stars and Dust', url: 'https://science.nasa.gov/asset/hubble/hubble-m31-phat-mosaic/' }
@@ -297,15 +297,15 @@ Object.assign(deepDetails, {
 });
 
 // Observational image credits are shown in the reused detail inspector.
-deepDetails.orion.modelNote='ภาพก๊าซและฝุ่นจริง: ESO/G. Beccari · CC BY 4.0 ภาพรวมหลายฟิลเตอร์ ไม่ใช่สีที่ตาเห็นโดยตรง ความลึก ชั้นก๊าซ และจังหวะการไหลเพิ่มขึ้นเพื่อสำรวจ ไม่ใช่ข้อมูลสามมิติที่วัดจริง';
+deepDetails.orion.modelNote='อ้างสีและเส้นใยจากภาพจริง: ESO/G. Beccari · CC BY 4.0 เป็นภาพรวมหลายฟิลเตอร์ ปริมาตรก๊าซ ฝุ่น ความลึกและด้านหลังสร้างเป็นแบบจำลองเพื่อสำรวจ ไม่ใช่ข้อมูลสามมิติที่วัดจากภาพ การไหลเร่งให้สังเกตได้';
 deepDetails.orion.sources.push({title:'ESO/G. Beccari · ภาพ Orion จาก VST',url:'https://www.eso.org/public/images/eso1723a/'},{title:'ใบอนุญาตภาพ · CC BY 4.0',url:'https://creativecommons.org/licenses/by/4.0/'});
-deepDetails.pleiades.modelNote='ภาพฝุ่นและดาวจริง: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage), R. Cool (University of Arizona) and WIYN · CC BY 4.0 ย่อภาพสำหรับเว็บ ความลึก การไหล และตำแหน่งจุดสำรวจเป็นการตีความ ไม่ใช่แผนที่สามมิติที่วัดจริง';
+deepDetails.pleiades.modelNote='อ้างสีและเส้นใยฝุ่นจากภาพจริง: NOIRLab/NSF/AURA/T.A. Rector (University of Alaska Anchorage), R. Cool (University of Arizona) and WIYN · CC BY 4.0 ปริมาตรฝุ่น ความลึกดาวและด้านหลังอนุมานเพื่อสำรวจ ไม่ใช่แผนที่สามมิติที่วัดได้ การไหลเร่งให้สังเกตได้';
 deepDetails.pleiades.sources.push({title:'NOIRLab · M45 ภาพจริงและเครดิต',url:'https://www.astropix.org/image/noirlab/noao-m45'},{title:'ใบอนุญาตภาพ · CC BY 4.0',url:'https://creativecommons.org/licenses/by/4.0/'});
 
-deepDetails.interstellar.modelNote='ท้องฟ้าฐานภาพจริง: ESO/S. Brunier · CC BY 4.0 เป็นพาโนรามาที่ถ่ายจากโลกแล้วนำมาสื่อท้องฟ้าไกล จุดดาวและมุมมองใกล้เคียงถูกจัดเพื่อสำรวจ ไม่ใช่ภาพที่วัด ณ ตำแหน่ง 2–3 ปีแสง';
+deepDetails.interstellar.modelNote='ท้องฟ้าอ้างภาพจริงจากโลก: ESO/S. Brunier · CC BY 4.0 พาโนรามาใช้แทนท้องฟ้าไกล ความลึกและตำแหน่งจุดดาวจัดขึ้นเพื่อสำรวจ ไม่ใช่แผนที่ดาวสามมิติหรือภาพที่วัด ณ ระยะ 2–3 ปีแสง';
 deepDetails.interstellar.sources.push({title:'ESO/S. Brunier · ภาพพาโนรามาทางช้างเผือก',url:'https://www.eso.org/public/images/eso0932a/'},{title:'ใบอนุญาตภาพ · CC BY 4.0',url:'https://creativecommons.org/licenses/by/4.0/'});
 
-deepDetails.andromeda.modelNote='ฐานภาพจริง: Local Group Survey Team and T.A. Rector (University of Alaska Anchorage) · CC BY 4.0 ภาพรวมหลายฟิลเตอร์ถูกย่อและฉายลงบนจานจำลอง ความลึก จุดดาว และมุมมองนอกภาพเป็นการตีความ ไม่ใช่แบบสามมิติที่วัดจริง';
+deepDetails.andromeda.modelNote='อ้างสีและโครงสร้างจากภาพจริง: Local Group Survey Team and T.A. Rector (University of Alaska Anchorage) · CC BY 4.0 เป็นภาพรวมหลายฟิลเตอร์ จานดาวที่มีความหนา ส่วนโป่ง ความลึกและด้านหลังอนุมานขึ้น ไม่ใช่การวัดสามมิติ ตำแหน่งดาวและการเคลื่อนจัดเพื่อสำรวจ';
 deepDetails.andromeda.sources.push({title:'NOIRLab · Local Group Survey ภาพ M31 และเครดิต',url:'https://www.astropix.org/image/noirlab/noao-m31lgs_ubvIha'},{title:'ใบอนุญาตภาพ · CC BY 4.0',url:'https://creativecommons.org/licenses/by/4.0/'});
-deepDetails.lmc.modelNote='ฐานภาพอินฟราเรดจริง: ESO/VMC Survey · CC BY 4.0 ใช้สีแทนฟิลเตอร์ Y/J/Ks ภาพถูกบีบอัดสำหรับเว็บและฉายลงบนชั้นจำลอง ความลึก ตำแหน่งดาว และปมก๊าซที่เพิ่มเป็นการตีความ ไม่ใช่การวัดสามมิติ';
+deepDetails.lmc.modelNote='อ้างสีและรูปกระจายดาวจากภาพอินฟราเรดจริง: ESO/VMC Survey · CC BY 4.0 สีแทนฟิลเตอร์ Y/J/Ks ปริมาตรแถบดาว ปมก๊าซ ความลึกและด้านหลังสร้างเป็นแบบจำลอง ไม่ได้วัดจากภาพ ตำแหน่งดาวและการเคลื่อนจัดเพื่อสำรวจ';
 deepDetails.lmc.sources.push({title:'ESO/VMC Survey · ภาพเมฆแมเจลแลนใหญ่',url:'https://www.eso.org/public/images/eso1914a/'},{title:'ใบอนุญาตภาพ · CC BY 4.0',url:'https://creativecommons.org/licenses/by/4.0/'});
