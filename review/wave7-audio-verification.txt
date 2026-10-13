@@ -1,0 +1,49 @@
+LIGHTYEAR — environment-first audio, wave7
+Verified 2026-10-13 in the current checkout before publication.
+
+User instruction: environmental audio should be the main sound, with Earth
+water/birds/nature and fiery-star effects instead of a shared musical drone.
+Interpretation: use a selected terrestrial habitat and designed object-specific
+textures, clearly label actual field recordings versus artistic sound design.
+No claim of physical microphone recordings from distant stars or galaxies.
+
+Implementation
+- Removed six musical/harmonic drones and the previous travel whoosh.
+- Earth mixes two verified CC0 recordings, 29.3 seconds with loop overlap.
+- Other scenes use 8 distinct nonmusical procedural texture families plus a
+  nature-like fallback. Scene mappings cover Earth and all12 landmarks.
+- Existing sound button/slider/mixer are reused, with scene title and expandable
+  explanation/credits. Default remains silent until a real user gesture.
+- Real post-master RMS amplitude drives the meter. It is not a spectrum,
+  temperature, terrain measurement, star energy or physical loudness metric.
+- Environment audio is independent of the cinematic VFX clock; no physical
+  event synchronization or scientific data sonification is claimed.
+
+Verification
+- Authored module syntax and Git whitespace checks passed.
+- Pure renderer produces finite stereo samples, peak below0.8, exact matching
+  seam endpoints and distinct noise/event profiles without oscillator nodes.
+- AudioContext mock lifecycle checks: 17 cases passed across the initial run
+  and targeted reruns after fixes, no unhandled rejection in tested paths.
+  Includes delayed Earth decode superseded by star navigation, at most two
+  tracked fade layers, rapid mute/resume/visibility races, context failure retry,
+  disposal during decode, zero/off, volume clamping and disabled lifecycle.
+  These are mocks, not speaker audibility tests.
+- Actual local browser: audio context running; Earth field-recording fallback
+  false; nonzero analysed RMS. At50%, an observed Earth RMS was0.038305.
+- Actual volume0 produced RMS0.000000 after the short volume ramp completed.
+- All13 scene buttons verified matching sound title/scene and running audio;
+  the rapid switching check kept tracked layers<=2; console errors/warnings[].
+- 390x844 screenshot and320x800 geometry: mixer inside viewport, horizontal
+  scrollWidth320 at width320; original canvas and controls remain present.
+- Preview comparison uses the same sound sources/profile renderer: 0–8sEarth,
+  8–16sProxima, 16–24sLuhman; waveform gain is equivalent to nominal50%
+  before the browser's output filter/compressor. No music or narration.
+
+Limits
+- No claim of having heard the user's physical speakers or verified a phone.
+- Responsive checks are browser viewport simulations.
+- Identifiability and aesthetic sound quality should be judged by listening to
+  the website or provided comparison; RMS alone cannot establish those.
+- Earlier full visual checks of world rendering are recorded in wave5 report;
+  this change preserves their implementation and verifies affected audio UI.

@@ -15,11 +15,11 @@
   <link rel="stylesheet" href="./styles.css?v=3">
   <link rel="stylesheet" href="./experience.css?v=3">
   <link rel="stylesheet" href="./flight.css?v=5">
-  <link rel="stylesheet" href="./effects.css?v=5">
+  <link rel="stylesheet" href="./effects.css?v=7">
   <link rel="preload" href="./assets/cosmic-hero.jpg" as="image">
   <link rel="preload" href="./assets/fonts/thai-700.ttf" as="font" type="font/ttf" crossorigin>
   <script src="./radius.js?v=3" defer></script>
-  <script type="module" src="./flight.js?v=5"></script>
+  <script type="module" src="./flight.js?v=7"></script>
 </head>
 <body>
   <main class="journey" id="journey" aria-label="สำรวจอวกาศสามมิติ">
@@ -32,7 +32,7 @@
     </header>
     <div class="flight-orientation"><span class="status-dot"></span><span id="flight-state" role="status" aria-live="polite">ลอยอยู่เหนือโลก</span></div>
     <div class="flight-help">ลากเพื่อมองรอบ <span>·</span> เลื่อนเพื่อเข้าใกล้</div>
-    <div class="sound-mixer" id="sound-mixer" hidden><label for="sound-volume">เสียงประกอบ <output id="sound-volume-value">50%</output></label><input id="sound-volume" type="range" min="0" max="100" value="50" aria-label="ระดับเสียงประกอบ"><span>บรรยากาศที่สร้างขึ้นเพื่อการสำรวจ</span></div>
+    <div class="sound-mixer" id="sound-mixer" hidden aria-label="เสียงสภาพแวดล้อม"><div class="sound-scene-heading"><span id="sound-type">เสียงบันทึกธรรมชาติ</span><strong id="sound-scene-name">น้ำไหล · นก · ธรรมชาติ</strong></div><label for="sound-volume">ระดับเสียง <output id="sound-volume-value">50%</output></label><input id="sound-volume" type="range" min="0" max="100" value="50" aria-label="ระดับเสียงประกอบ"><p id="sound-scene-note">เสียงภาคสนามบนพื้นโลก</p><details id="sound-explanation"><summary>เสียงนี้สะท้อนอะไร <span>＋</span></summary><p id="sound-basis"></p><p class="sound-meter-note">แถบเสียงแสดงความดังของเสียงที่กำลังเล่น ไม่ใช่ค่าพลังงานหรืออุณหภูมิของดาว</p><div id="sound-credits"></div></details></div>
     <div class="flight-tools" role="group" aria-label="ควบคุมมุมมอง"><button id="flight-zoom-in" aria-label="เข้าใกล้วัตถุ">+</button><button id="flight-zoom-out" aria-label="ถอยห่างจากวัตถุ">−</button><span></span><button id="flight-reset" aria-label="คืนมุมมองเริ่มต้น">↺</button><button id="flight-pause" aria-label="หยุดการเคลื่อนไหว" aria-pressed="false">Ⅱ</button><button id="flight-fullscreen" aria-label="เปิดเต็มจอ">⛶</button></div>
     <section class="flight-caption" aria-labelledby="flight-name">
       <p class="flight-kicker" id="flight-kicker">OUR PALE BLUE DOT</p>

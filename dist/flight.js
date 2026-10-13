@@ -3,7 +3,8 @@ import { landmarks } from './landmarks.js?v=3';
 import { selectExhibit, openDetail, escapeHtml } from './app.js?v=5';
 import { createWorld } from './flight-worlds.js?v=5';
 import { createSpaceField } from './flight-field.js?v=4';
-import { createSpaceAudio } from './flight-audio.js?v=5';
+import { createSpaceAudio } from './flight-audio.js?v=7';
+import { soundProfiles, soundScienceSource } from './sound-profiles.js?v=7';
 import { deepDetails } from './deep-details.js?v=5';
 
 const $ = selector => document.querySelector(selector);
@@ -45,7 +46,7 @@ function startJourney() {
   let yaw=0, pitch=.05, zoom=1, smoothYaw=0, smoothPitch=.05, smoothZoom=1;
   let paused=reducedMotion, touring=false, tourElapsed=0, animationTime=0, lastTime=0;
   let effectTime=0,effectRate=1,lastSoundUpdate=0,inspecting=false,activeFeature=0;
-  let inspectPreviousZoom=null,soundMixerTimer=null;
+  let inspectPreviousZoom=null,soundMixerTimer=null,lastSoundProfile='';
   let pointer=null;
   let width=1,height=1,pixelRatio=1;
   const center=new THREE.Vector3();
@@ -147,18 +148,30 @@ function startJourney() {
     const status=audio.getStatus(),button=$('#flight-sound');
     button.setAttribute('aria-pressed',String(status.enabled));button.setAttribute('aria-label',status.enabled?'ปิดเสียงประกอบ':'เปิดเสียงประกอบ');button.dataset.state=status.state;
     $('#sound-mixer').hidden=!status.enabled;$('#journey').classList.toggle('sound-enabled',status.enabled);
-    const meter=$('#sound-meter');meter.style.setProperty('--level',String(Math.min(1,status.level*85)));meter.dataset.level=status.level.toFixed(6);
+    const meter=$('#sound-meter');meter.style.setProperty('--level',String(Math.min(1,status.level/.055)));meter.dataset.level=status.level.toFixed(6);
+    const profileKey=`${status.sceneId}:${status.loading}:${status.fallback}:${status.failed}`;
+    const mixer=$('#sound-mixer');mixer.dataset.scene=status.sceneId;mixer.dataset.layers=String(status.activeLayers);mixer.dataset.loading=String(status.loading);mixer.dataset.fallback=String(status.fallback);
+    if(profileKey!==lastSoundProfile){
+      lastSoundProfile=profileKey;const profile=soundProfiles[status.sceneId];
+      $('#sound-type').textContent=status.failed?'เล่นเสียงฉากนี้ไม่สำเร็จ':status.loading?'กำลังโหลดเสียงธรรมชาติ…':status.fallback?'เสียงจำลองสำรอง':profile.type;
+      $('#sound-scene-name').textContent=status.fallback?'น้ำและลมจำลอง':profile.title;
+      $('#sound-scene-note').textContent=status.failed?'ลองปิดแล้วเปิดเสียงอีกครั้ง':status.fallback?'โหลดเสียงภาคสนามไม่สำเร็จ กำลังใช้บรรยากาศจำลอง':profile.note;
+      $('#sound-basis').textContent=profile.basis;
+      const natureLinks=status.sceneId==='earth'&&!status.fallback?'<a href="https://freesound.org/people/soundofsong/sounds/641340/" target="_blank" rel="noopener noreferrer">น้ำ · soundofsong / CC0 ↗</a><a href="https://opengameart.org/content/ambient-bird-sounds" target="_blank" rel="noopener noreferrer">นก · isaiah658 / CC0 ↗</a>':'';
+      $('#sound-credits').innerHTML=`${natureLinks}<a href="${soundScienceSource.url}" target="_blank" rel="noopener noreferrer">${soundScienceSource.title} ↗</a>`;
+    }
   }
   function showSoundMixer(duration=6000){
     clearTimeout(soundMixerTimer);
     if(!audio.getStatus().enabled)return;
     $('#journey').classList.add('audio-adjusting');
-    soundMixerTimer=setTimeout(()=>{if(!$('#sound-mixer').contains(document.activeElement))$('#journey').classList.remove('audio-adjusting');},duration);
+    soundMixerTimer=setTimeout(()=>{if(!$('#sound-mixer').contains(document.activeElement)&&!$('#sound-explanation').open)$('#journey').classList.remove('audio-adjusting');},duration);
   }
   $('#flight-sound').addEventListener('pointerenter',()=>showSoundMixer());
   $('#sound-mixer').addEventListener('pointerenter',()=>showSoundMixer());
   $('#sound-mixer').addEventListener('focusin',()=>showSoundMixer());
   $('#sound-mixer').addEventListener('focusout',()=>showSoundMixer(1200));
+  $('#sound-explanation').addEventListener('toggle',()=>showSoundMixer(6000));
   $('#flight-sound').addEventListener('click',async event=>{
     const button=event.currentTarget;button.disabled=true;
     const wasEnabled=audio.getStatus().enabled;
@@ -186,6 +199,7 @@ function startJourney() {
     $('#flight-state').textContent=`กำลังเคลื่อนเข้าสู่ ${id==='earth'?'โลก':landmarks[currentIndex-1].thaiName}`;
     tourElapsed=0;
     audio.setScene(id);audio.transition();
+    $('#sound-explanation').open=false;if(audio.getStatus().enabled)showSoundMixer(6500);
     updateCaption();
   }
   function navigate(id) {

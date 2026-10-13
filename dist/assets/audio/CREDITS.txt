@@ -1,0 +1,36 @@
+LIGHTYEAR environment-first soundscape — 2026-10-13
+
+earth-river-birds.mp3 combines two real CC0 field recordings:
+
+1. rushing river loop.wav — soundofsong
+River water over stones in Australia, with faint background birds.
+https://freesound.org/people/soundofsong/sounds/641340/
+Source downloaded: public high-quality MP3 preview (not the original WAV).
+https://cdn.freesound.org/previews/641/641340_9782868-hq.mp3
+
+2. Ambient Bird Sounds — isaiah658
+Ambient birds recorded with the creator's camera microphone and cleaned.
+https://opengameart.org/content/ambient-bird-sounds
+Original attachment: https://opengameart.org/sites/default/files/birds-isaiah658_0.ogg
+
+Both recordings explicitly licensed CC0 1.0:
+https://creativecommons.org/publicdomain/zero/1.0/
+The sound pages and licenses were verified on 2026-10-13.
+Attribution is optional under CC0 and is provided here and in the sound panel.
+
+Adaptation: mixed the recordings, adjusted their loudness independently,
+created a 0.7 second overlap at the loop boundary and encoded a 29.3 second
+stereo MP3 at 160 kbps. The mix describes a streamside environment on Earth;
+it is not a recording from orbit or a geographically unified field session.
+
+Other scenes: original procedural nonmusical textures in environment-synthesis.js.
+Stellar crackle, windlike weather, nebula flow and accretion textures are designed
+visual interpretations, not microphone recordings or data sonifications.
+No actual measured temperature, brightness, distance or surface terrain data is
+converted into frequency or volume. Empty-space scenes are intentionally quiet.
+
+Scientific context:
+https://science.nasa.gov/ems/02_anatomy/
+https://science.nasa.gov/sun/facts/
+https://www.nasa.gov/solar-system/sounds-of-the-sun/
+https://www.eso.org/public/news/eso1404/
